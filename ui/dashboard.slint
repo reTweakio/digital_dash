@@ -1,9 +1,68 @@
+import { VerticalBox } from "std-widgets.slint";
+
 export component Dashboard inherits Window {
-    preferred-width: 200px;
-    preferred-height: 100px;
-    Rectangle {
-        width: 200px;
-        height: 100px;
-        background: green;
+    min-width: 800px;
+    min-height: 500px;
+    GridLayout {
+        Row {
+            Rectangle {
+            height: 100px;
+            colspan: 3;
+                Text {
+                    text: "RPM";
+                }
+                background: red;
+            }
+        }
+
+
+        Row {
+            Rectangle {
+                colspan: 1;
+                height: 300px;
+                Text {
+                    text: "Best lap Time";
+                }
+                background: green;
+            }
+
+            Rectangle {
+                colspan: 1;
+                height: 300px;
+                in property <int> gear;
+                Text {
+                    font-size: 20px;
+                    text: gear;
+                }
+                background: blue;
+            }
+
+            Rectangle {
+                colspan: 1;
+                height: 300px;
+                VerticalBox {
+                    alignment: center;
+                    Text {
+                        text: "Current lap Time";
+                    }
+                    Text {
+                        text: "last lap Time";
+                    }
+                }
+                background: purple;
+            }
+        }
+
+
+        Row {
+            Rectangle {
+            height: 100px;
+                colspan: 3;
+                Text {
+                    text: "Speed";
+                }
+                background: red;
+            }
+        }
     }
 }
