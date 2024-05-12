@@ -14,9 +14,9 @@ fn main() -> Result<(), slint::PlatformError> {
     let ui: Dashboard = Dashboard::new()?;
 
     let local_addr: &str = "10.0.0.58:8080";
-    let socket: UdpSocket = UdpSocket::bind(&local_addr).expect("Failed to bind to address");
+    //let socket: UdpSocket = UdpSocket::bind(&local_addr).expect("Failed to bind to address");
 
-    println!("Listening on: {}", local_addr);
+    println!("stening on: {}", local_addr);
 
     // loop {
     //     let mut buf: Vec<u8> = vec![0; 1024];
