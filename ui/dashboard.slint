@@ -3,13 +3,20 @@ import { VerticalBox } from "std-widgets.slint";
 export component Dashboard inherits Window {
     min-width: 800px;
     min-height: 500px;
+    callback update_values();
+    in property <float> rpm: 0.0;
+    in property <float> speed;
+    in property <float> best_lap;
+    in property <float> current_lap;
+    in property <float> race_time;
+    in property <int> gear;
     GridLayout {
         Row {
             Rectangle {
             height: 100px;
             colspan: 3;
                 Text {
-                    text: "RPM";
+                    text: "\{root.rpm}";
                 }
                 background: red;
             }

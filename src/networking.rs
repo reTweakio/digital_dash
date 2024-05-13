@@ -12,6 +12,32 @@ pub struct PacketInfo {
     gear: u8
 }
 
+impl PacketInfo {
+    pub fn get_current_rpm(&self) -> f32 {
+        return self.current_rpm
+    }
+
+    pub fn get_speed(&self) -> f32 {
+        return self.speed
+    }
+
+    pub fn get_best_lap(&self) -> f32 {
+        return self.best_lap
+    }
+
+    pub fn get_current_lap(&self) -> f32 {
+        return self.current_lap
+    }
+
+    pub fn get_current_race_time(&self) -> f32 {
+        return self.current_race_time
+    }
+
+    pub fn get_gear(&self) -> i32 {
+        return self.gear as i32
+    }
+}
+
 fn setup_udp_socket() -> UdpSocket {
     let ip_addr: String = local_ip().unwrap().to_string();
     let port: &str = "8080";
