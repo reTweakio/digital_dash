@@ -3,13 +3,14 @@ import { VerticalBox } from "std-widgets.slint";
 export component Dashboard inherits Window {
     min-width: 800px;
     min-height: 500px;
-    callback update_values();
-    in property <float> rpm: 0.0;
+
+    in property <float> rpm;
     in property <float> speed;
     in property <float> best_lap;
     in property <float> current_lap;
     in property <float> race_time;
     in property <int> gear;
+
     GridLayout {
         Row {
             Rectangle {
@@ -28,7 +29,7 @@ export component Dashboard inherits Window {
                 colspan: 1;
                 height: 300px;
                 Text {
-                    text: "Best lap Time";
+                    text: "Best lap Time: \{root.best_lap}";
                 }
                 background: green;
             }
@@ -39,7 +40,7 @@ export component Dashboard inherits Window {
                 in property <int> gear;
                 Text {
                     font-size: 20px;
-                    text: gear;
+                    text: "\{root.gear}";
                 }
                 background: blue;
             }
@@ -50,10 +51,10 @@ export component Dashboard inherits Window {
                 VerticalBox {
                     alignment: center;
                     Text {
-                        text: "Current lap Time";
+                        text: "Current lap Time: \{root.current_lap}";
                     }
                     Text {
-                        text: "last lap Time";
+                        text: "last lap Time: ";
                     }
                 }
                 background: purple;
@@ -66,7 +67,7 @@ export component Dashboard inherits Window {
             height: 100px;
                 colspan: 3;
                 Text {
-                    text: "Speed";
+                    text: "Speed: \{root.speed}";
                 }
                 background: red;
             }

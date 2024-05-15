@@ -1,26 +1,32 @@
+use std::thread;
 use std::sync::mpsc::Receiver;
 use crate::networking::PacketInfo;
 
 slint::include_modules!();
-pub fn run_ui(receiver: Receiver<PacketInfo>) -> Result<(), slint::PlatformError> {
-    let dashboard: Dashboard = Dashboard::new()?;
-    let packet_info: PacketInfo = receiver.recv().unwrap();
 
-    dashboard.on_update_values(move || {
-        let current_rpm = packet_info.get_current_rpm();
-        let speed = packet_info.get_speed();
-        let best_lap = packet_info.get_best_lap();
-        let current_lap = packet_info.get_current_lap();
-        let current_race_time = packet_info.get_current_race_time();
-        let gear = packet_info.get_gear();
+pub fn run_ui(receiver: Receiver<PacketInfo>) {
+    let dashboard: Dashboard = Dashboard::new().unwrap();
+    let weak_dashboard = dashboard.as_weak();
 
-        dashboard.set_rpm(current_rpm);
-        dashboard.set_speed(speed);
-        dashboard.set_best_lap(best_lap);
-        dashboard.set_current_lap(current_lap);
-        dashboard.set_race_time(current_race_time);
-        dashboard.set_gear(gear);
+    thread::spawn(move || {
+        let dashboard = weak_dashboard.clone();
+        loop {
+            let packet_info: PacketInfo = receiver.recv().unwrap();
+
+            let current_rpm: f32 = packet_info.get_current_rpm();
+            let speed: f32 = packet_info.get_speed();
+            let best_lap: f32 = packet_info.get_best_lap();
+            let current_lap: f32 = packet_info.get_current_lap();
+            let gear: i32 = packet_info.get_gear();
+
+            dashboard.upgrade_in_event_loop(move |dashboard| dashboard.set_rpm(current_rpm)).unwrap();
+            dashboard.upgrade_in_event_loop(move |dashboard| dashboard.set_speed(speed)).unwrap();
+            dashboard.upgrade_in_event_loop(move |dashboard| dashboard.set_best_lap(best_lap)).unwrap();
+            dashboard.upgrade_in_event_loop(move |dashboard| dashboard.set_current_lap(current_lap)).unwrap();
+            dashboard.upgrade_in_event_loop(move |dashboard| dashboard.set_gear(gear)).unwrap();
+            
+        }
     });
 
-    dashboard.run()
+    dashboard.run().unwrap();
 }

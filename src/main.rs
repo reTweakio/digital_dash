@@ -7,7 +7,7 @@ mod ui;
 fn main() {
     let (sender, receiver) = mpsc::channel();
 
-    thread::spawn(move || {
+    thread::spawn(|| {
         networking::parse_packets(sender);
     });
 
