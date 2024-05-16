@@ -6,10 +6,9 @@ slint::include_modules!();
 
 pub fn run_ui(receiver: Receiver<PacketInfo>) {
     let dashboard: Dashboard = Dashboard::new().unwrap();
-    let weak_dashboard = dashboard.as_weak();
+    let weak_dashboard: slint::Weak<Dashboard> = dashboard.as_weak();
 
     thread::spawn(move || {
-        let dashboard = weak_dashboard.clone();
         loop {
             let packet_info: PacketInfo = receiver.recv().unwrap();
 
@@ -17,13 +16,15 @@ pub fn run_ui(receiver: Receiver<PacketInfo>) {
             let speed: f32 = packet_info.get_speed();
             let best_lap: f32 = packet_info.get_best_lap();
             let current_lap: f32 = packet_info.get_current_lap();
+            let race_time: f32 = packet_info.get_current_race_time();
             let gear: i32 = packet_info.get_gear();
 
-            dashboard.upgrade_in_event_loop(move |dashboard| dashboard.set_rpm(current_rpm)).unwrap();
-            dashboard.upgrade_in_event_loop(move |dashboard| dashboard.set_speed(speed)).unwrap();
-            dashboard.upgrade_in_event_loop(move |dashboard| dashboard.set_best_lap(best_lap)).unwrap();
-            dashboard.upgrade_in_event_loop(move |dashboard| dashboard.set_current_lap(current_lap)).unwrap();
-            dashboard.upgrade_in_event_loop(move |dashboard| dashboard.set_gear(gear)).unwrap();
+            weak_dashboard.upgrade_in_event_loop(move |dashboard: Dashboard| dashboard.set_rpm(current_rpm)).unwrap();
+            weak_dashboard.upgrade_in_event_loop(move |dashboard: Dashboard| dashboard.set_speed(speed)).unwrap();
+            weak_dashboard.upgrade_in_event_loop(move |dashboard: Dashboard| dashboard.set_best_lap(best_lap)).unwrap();
+            weak_dashboard.upgrade_in_event_loop(move |dashboard: Dashboard| dashboard.set_current_lap(current_lap)).unwrap();
+            weak_dashboard.upgrade_in_event_loop(move |dashboard: Dashboard| dashboard.set_race_time(race_time)).unwrap();
+            weak_dashboard.upgrade_in_event_loop(move |dashboard: Dashboard| dashboard.set_gear(gear)).unwrap();
             
         }
     });

@@ -47,14 +47,14 @@ fn setup_udp_socket() -> UdpSocket {
     return socket
 }
 
-pub fn parse_packets(sender: Sender<PacketInfo>) -> PacketInfo {
+pub fn parse_packets(sender: Sender<PacketInfo>) {
     let socket: UdpSocket = setup_udp_socket();
 
     loop {
         let mut buf: Vec<u8> = vec![0; 1024];
         socket.recv_from(&mut buf).expect("Failed to receive data");
 
-        let packet_info = PacketInfo {
+        let packet_info: PacketInfo = PacketInfo {
             current_rpm: f32::from_le_bytes(buf[16..20].try_into().unwrap()),
             speed: f32::from_le_bytes(buf[244..248].try_into().unwrap()),
             best_lap: f32::from_le_bytes(buf[284..288].try_into().unwrap()),
