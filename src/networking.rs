@@ -9,7 +9,15 @@ pub struct PacketInfo {
     best_lap: f32,
     current_lap: f32,
     current_race_time: f32,
-    gear: u8
+    gear: u8,
+    accel: u8,
+    brake: u8,
+    position: u8,
+    temp_left_f: f32,
+    temp_right_f: f32,
+    temp_left_r: f32,
+    temp_right_r: f32,
+    lap_number: u16
 }
 
 impl PacketInfo {
@@ -36,6 +44,38 @@ impl PacketInfo {
     pub fn get_gear(&self) -> i32 {
         return self.gear as i32
     }
+
+    pub fn get_accel(&self) -> i32 {
+        return self.accel as i32
+    }
+
+    pub fn get_brake(&self) -> i32 {
+        return self.brake as i32
+    }
+
+    pub fn get_position(&self) -> i32 {
+        return self.position as i32
+    }
+
+    pub fn get_temp_left_f(&self) -> f32 {
+        return self.temp_left_f
+    }
+
+    pub fn get_temp_right_f(&self) -> f32 {
+        return self.temp_right_f
+    }
+
+    pub fn get_temp_left_r(&self) -> f32 {
+        return self.temp_left_r
+    }
+
+    pub fn get_temp_right_r(&self) -> f32 {
+        return self.temp_right_r
+    }
+
+    pub fn get_lap_number(&self) -> i32 {
+        return self.lap_number as i32
+    }
 }
 
 fn setup_udp_socket() -> UdpSocket {
@@ -60,7 +100,15 @@ pub fn parse_packets(sender: Sender<PacketInfo>) {
             best_lap: f32::from_le_bytes(buf[284..288].try_into().unwrap()),
             current_lap: f32::from_le_bytes(buf[292..296].try_into().unwrap()),
             current_race_time: f32::from_le_bytes(buf[296..300].try_into().unwrap()),
-            gear: buf[307] as u8
+            gear: buf[307] as u8,
+            accel: buf[304] as u8,
+            brake: buf[305] as u8,
+            position: buf[303] as u8,
+            temp_left_f: f32::from_le_bytes(buf[248..252].try_into().unwrap()),
+            temp_right_f: f32::from_le_bytes(buf[252..256].try_into().unwrap()),
+            temp_left_r: f32::from_le_bytes(buf[256..260].try_into().unwrap()),
+            temp_right_r: f32::from_le_bytes(buf[260..264].try_into().unwrap()),
+            lap_number: u16::from_le_bytes(buf[288..290].try_into().unwrap())
         };
 
         sender.send(packet_info).expect("Error sending packet data to thread");

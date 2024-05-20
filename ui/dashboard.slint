@@ -9,10 +9,10 @@ export component Dashboard inherits Window {
     in property <float> current_lap;
     in property <float> race_time;
     in property <float> delta;
-    in property <float> tire_temp_left;
-    in property <float> tire_temp_right;
-    in property <float> tire_temp_left_rear;
-    in property <float> tire_temp_right_rear;
+    in property <float> temp_left_f;
+    in property <float> temp_right_f;
+    in property <float> temp_left_r;
+    in property <float> temp_right_r;
     in property <int> lap_number;
     in property <int> gear;
     in property <int> position;
@@ -203,7 +203,7 @@ export component Dashboard inherits Window {
                             background: bg-color;
                             Text {
                                 font-size: 30px;
-                                text: "\{root.tire_temp_left}";
+                                text: "\{root.temp_left_f}";
                                 color: text-color;
                             }
                         }
@@ -214,7 +214,7 @@ export component Dashboard inherits Window {
                             border-color: white;background: bg-color;
                             Text {
                                 font-size: 30px;
-                                text: "\{root.tire_temp_right}";
+                                text: "\{root.temp_right_f}";
                                 color: text-color;
                             }
                         }
@@ -230,7 +230,7 @@ export component Dashboard inherits Window {
                             background: bg-color;
                             Text {
                                 font-size: 30px;
-                                text: "\{root.tire_temp_left_rear}";
+                                text: "\{root.temp_left_r}";
                                 color: text-color;
                             }
                         }
@@ -242,7 +242,7 @@ export component Dashboard inherits Window {
                             background: bg-color;
                             Text {
                                 font-size: 30px;
-                                text: "\{root.tire_temp_right_rear}";
+                                text: "\{root.temp_right_r}";
                                 color: text-color;
                             }
                         }
