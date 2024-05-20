@@ -64,6 +64,7 @@ export component Dashboard inherits Window {
                 border-color: white;
                 background: bg-color;
                 Text {
+                    font-size: 30px;
                     text: "\{root.speed}\nspeed";
                     color: text-color;
                 }
@@ -74,7 +75,7 @@ export component Dashboard inherits Window {
                 border-color: white;
                 background: bg-color;
                 Text {
-                    font-size: 25px;
+                    font-size: 30px;
                     text: "\{root.rpm}\nrpm";
                     color: text-color;
                 }
@@ -86,6 +87,7 @@ export component Dashboard inherits Window {
                 height: 15%;
                 background: bg-color;
                 Text {
+                    font-size: 30px;
                     text: "P\{root.position}";
                     color: text-color;
                 }
@@ -97,6 +99,7 @@ export component Dashboard inherits Window {
                 height: 15%;
                 background: bg-color;
                 Text {
+                    font-size: 30px;
                     text: "L\{root.lap_number}";
                     color: text-color;
                 }
@@ -128,7 +131,7 @@ export component Dashboard inherits Window {
                     border-width: 1px;
                     border-color: white;
                     Text {
-                        font-size: 25px;
+                        font-size: 100px;
                         text: "\{root.gear}\ngear";
                         color: text-color;
                     }
@@ -151,7 +154,8 @@ export component Dashboard inherits Window {
                 background: bg-color;
                 height: 10%;
                 Text {
-                    text: "\{root.current_lap}\nCurrent";
+                    font-size: 15px;
+                    text: "Current: \{root.current_lap}";
                     color: text-color;
                 }
             }
@@ -162,7 +166,8 @@ export component Dashboard inherits Window {
                 height: 10%;
                 background: bg-color;
                 Text {
-                    text: "\{root.delta}\nDelta";
+                    font-size: 15px;
+                    text: "Delta: \{root.delta}";
                     color: text-color;
                 }
             }
@@ -173,7 +178,8 @@ export component Dashboard inherits Window {
                 height: 10%;
                 background: bg-color;
                 Text {
-                    text: "\{root.best_lap}\nBest";
+                    font-size: 15px;
+                    text: "Best: \{root.best_lap}";
                     color: text-color;
                 }
             }
@@ -196,6 +202,7 @@ export component Dashboard inherits Window {
                             border-color: white;
                             background: bg-color;
                             Text {
+                                font-size: 30px;
                                 text: "\{root.tire_temp_left}";
                                 color: text-color;
                             }
@@ -206,6 +213,7 @@ export component Dashboard inherits Window {
                             border-width: 1px;
                             border-color: white;background: bg-color;
                             Text {
+                                font-size: 30px;
                                 text: "\{root.tire_temp_right}";
                                 color: text-color;
                             }
@@ -221,6 +229,7 @@ export component Dashboard inherits Window {
                             border-color: white;
                             background: bg-color;
                             Text {
+                                font-size: 30px;
                                 text: "\{root.tire_temp_left_rear}";
                                 color: text-color;
                             }
@@ -232,6 +241,7 @@ export component Dashboard inherits Window {
                             border-color: white;
                             background: bg-color;
                             Text {
+                                font-size: 30px;
                                 text: "\{root.tire_temp_right_rear}";
                                 color: text-color;
                             }
