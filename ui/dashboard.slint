@@ -1,4 +1,3 @@
-import { VerticalBox } from "std-widgets.slint";
 
 export component Dashboard inherits Window {
     min-width: 800px;
@@ -9,71 +8,236 @@ export component Dashboard inherits Window {
     in property <float> best_lap;
     in property <float> current_lap;
     in property <float> race_time;
+    in property <float> delta;
+    in property <float> tire_temp_left;
+    in property <float> tire_temp_right;
+    in property <float> tire_temp_left_rear;
+    in property <float> tire_temp_right_rear;
+    in property <int> lap_number;
     in property <int> gear;
+    in property <int> position;
+    in property <int> accel;
+    in property <int> brake;
+
+    property <color> bg-color: #141720;
+    property <color> text-color: #ff9a03;
+    property <color> rpm1: #00FF00;
+    property <color> rpm2: #ff0400;
+    property <color> rpm3: #d53af8;
+
+    // Define a model for RPM lights
+    in property <[bool]> rpm_lights: [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false];
 
     GridLayout {
-        Row {
-            Rectangle {
-            height: 100px;
+        min-height: 500px;
+        min-width: 800px;
+
+        // Top row
+        Rectangle {
+            border-width: 1px;
+            border-color: white;
+            col: 0;
+            row: 0;
             colspan: 3;
-                Text {
-                    text: "\{root.rpm}";
+            height: 10%;
+            background: bg-color;
+            HorizontalLayout {
+                padding: 15px;
+                spacing: 28px;
+                alignment: center;
+                for led in rpm_lights : Rectangle {
+                    width: 25px;
+                    height: 25px;
+                    background: led ? #00FF00 : #c0c0c0;
+                    border-radius: 15px;
                 }
-                background: red;
             }
         }
 
-
-        Row {
+        // Left side
+        VerticalLayout {
+            width: 25%;
+            col: 0;
+            row: 1;
             Rectangle {
-                colspan: 1;
-                height: 300px;
+                border-width: 1px;
+                border-color: white;
+                background: bg-color;
                 Text {
-                    text: "Best lap Time: \{root.best_lap}";
+                    text: "\{root.speed}\nspeed";
+                    color: text-color;
                 }
-                background: green;
             }
 
             Rectangle {
-                colspan: 1;
-                height: 300px;
-                in property <int> gear;
+                border-width: 1px;
+                border-color: white;
+                background: bg-color;
                 Text {
-                    font-size: 20px;
-                    text: "\{root.gear}";
+                    font-size: 25px;
+                    text: "\{root.rpm}\nrpm";
+                    color: text-color;
                 }
-                background: blue;
             }
 
             Rectangle {
-                colspan: 1;
-                height: 300px;
-                VerticalBox {
-                    alignment: center;
-                    Text {
-                        text: "Current lap Time: \{root.current_lap}";
-                    }
-                    Text {
-                        text: "last lap Time: ";
-                    }
-
-                    Text {
-                        text: "Race Time: \{root.race_time}";
-                    }
+                border-width: 1px;
+                border-color: white;
+                height: 15%;
+                background: bg-color;
+                Text {
+                    text: "P\{root.position}";
+                    color: text-color;
                 }
-                background: purple;
+            }
+
+            Rectangle {
+                border-width: 1px;
+                border-color: white;
+                height: 15%;
+                background: bg-color;
+                Text {
+                    text: "L\{root.lap_number}";
+                    color: text-color;
+                }
             }
         }
 
-
-        Row {
-            Rectangle {
-            height: 100px;
-                colspan: 3;
-                Text {
-                    text: "Speed: \{root.speed}";
+                // Center
+        VerticalLayout {
+            width: 50%;
+            col: 1;
+            row: 1;
+            GridLayout {
+                // Left thin rectangle
+                Rectangle {
+                    row: 0;
+                    col: 0;
+                    width: 5%; // Thin width
+                    height: 100%;
+                    background: bg-color;
+                    border-width: 1px;
+                    border-color: white;
                 }
-                background: red;
+                // Gear rectangle
+                Rectangle {
+                    row: 0;
+                    col: 1;
+                    height: 70%;
+                    background: bg-color;
+                    border-width: 1px;
+                    border-color: white;
+                    Text {
+                        font-size: 25px;
+                        text: "\{root.gear}\ngear";
+                        color: text-color;
+                    }
+                }
+                // Right thin rectangle
+                Rectangle {
+                    row: 0;
+                    col: 2;
+                    width: 5%; // Thin width
+                    height: 100%;
+                    background: bg-color;
+                    border-width: 1px;
+                    border-color: white;
+                }
+            }
+
+            Rectangle {
+                border-width: 1px;
+                border-color: white;
+                background: bg-color;
+                height: 10%;
+                Text {
+                    text: "\{root.current_lap}\nCurrent";
+                    color: text-color;
+                }
+            }
+
+            Rectangle {
+                border-width: 1px;
+                border-color: white;
+                height: 10%;
+                background: bg-color;
+                Text {
+                    text: "\{root.delta}\nDelta";
+                    color: text-color;
+                }
+            }
+
+            Rectangle {
+                border-width: 1px;
+                border-color: white;
+                height: 10%;
+                background: bg-color;
+                Text {
+                    text: "\{root.best_lap}\nBest";
+                    color: text-color;
+                }
+            }
+        }
+
+        // Right side
+        VerticalLayout {
+            width: 25%;
+            col: 2;
+            row: 1;
+            // Tire temp
+            Rectangle {
+                VerticalLayout {
+                    HorizontalLayout {
+                        height: 50%;
+                        width: 50%;
+                        Rectangle {
+                            width: 50%;
+                            border-width: 1px;
+                            border-color: white;
+                            background: bg-color;
+                            Text {
+                                text: "\{root.tire_temp_left}";
+                                color: text-color;
+                            }
+                        }
+
+                        Rectangle {
+                            width: 50%;
+                            border-width: 1px;
+                            border-color: white;background: bg-color;
+                            Text {
+                                text: "\{root.tire_temp_right}";
+                                color: text-color;
+                            }
+                        }
+                    }
+
+                    HorizontalLayout {
+                        height: 50%;
+                        width: 50%;
+                        Rectangle {
+                            width: 50%;
+                            border-width: 1px;
+                            border-color: white;
+                            background: bg-color;
+                            Text {
+                                text: "\{root.tire_temp_left_rear}";
+                                color: text-color;
+                            }
+                        }
+
+                        Rectangle {
+                            width: 50%;
+                            border-width: 1px;
+                            border-color: white;
+                            background: bg-color;
+                            Text {
+                                text: "\{root.tire_temp_right_rear}";
+                                color: text-color;
+                            }
+                        }
+                    }
+                }
             }
         }
     }
