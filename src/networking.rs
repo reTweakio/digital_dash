@@ -101,10 +101,10 @@ pub fn parse_packets(sender: Sender<PacketInfo>) {
 
         let packet_info: PacketInfo = PacketInfo {
             current_rpm: f32::from_le_bytes(buf[16..20].try_into().unwrap()).round(),
+            max_rpm: f32::from_le_bytes(buf[8..12].try_into().unwrap()),
             speed: (f32::from_le_bytes(buf[244..248].try_into().unwrap()) * 2.237).round(),
             best_lap: f32::from_le_bytes(buf[284..288].try_into().unwrap()),
             current_lap: f32::from_le_bytes(buf[292..296].try_into().unwrap()),
-            max_rpm: f32::from_le_bytes(buf[7..11].try_into().unwrap()),
             current_race_time: f32::from_le_bytes(buf[296..300].try_into().unwrap()),
             gear: buf[307] as u8,
             accel: buf[303] as u8,

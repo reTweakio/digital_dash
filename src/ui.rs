@@ -1,8 +1,19 @@
 use std::thread;
 use std::sync::mpsc::Receiver;
+use slint::{ModelRc, VecModel};
 use crate::networking::PacketInfo;
 
 slint::include_modules!();
+
+fn update_rpm_lights(rpm: f32, max_rpm: f32, rpm_lights: &mut Vec<bool>) {
+    let step_size = max_rpm / rpm_lights.len() as f32;
+    let lights_on = (rpm / step_size).ceil() as usize;
+    
+    for i in 0..rpm_lights.len() {
+        rpm_lights[i] = i < lights_on;
+    }
+}
+
 
 pub fn run_ui(receiver: Receiver<PacketInfo>) {
     let dashboard: Dashboard = Dashboard::new().unwrap();
@@ -27,7 +38,11 @@ pub fn run_ui(receiver: Receiver<PacketInfo>) {
             let temp_left_r: f32 = packet_info.get_temp_left_r();
             let temp_right_r: f32 = packet_info.get_temp_right_r();
             let lap_number: i32 = packet_info.get_lap_number();
-            
+
+            let mut rpm_lights: Vec<bool> = vec![false; 15];
+            update_rpm_lights(current_rpm, max_rpm, &mut rpm_lights);
+            weak_dashboard.upgrade_in_event_loop(move |dashboard: Dashboard| dashboard.set_rpm_lights(ModelRc::new(VecModel::from(rpm_lights)))).unwrap();
+
             weak_dashboard.upgrade_in_event_loop(move |dashboard: Dashboard| dashboard.set_rpm(current_rpm)).unwrap();
             weak_dashboard.upgrade_in_event_loop(move |dashboard: Dashboard| dashboard.set_speed(speed)).unwrap();
             weak_dashboard.upgrade_in_event_loop(move |dashboard: Dashboard| dashboard.set_best_lap(best_lap)).unwrap();
