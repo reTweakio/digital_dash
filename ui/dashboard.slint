@@ -16,8 +16,8 @@ export component Dashboard inherits Window {
     in property <int> lap_number;
     in property <int> gear;
     in property <int> position;
-    in property <int> accel;
-    in property <int> brake;
+    in property <percent> accel;
+    in property <percent> brake;
 
     property <color> bg-color: #141720;
     property <color> text-color: #ff9a03;
@@ -27,6 +27,9 @@ export component Dashboard inherits Window {
 
     // Define a model for RPM lights
     in property <[bool]> rpm_lights: [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false];
+    in property <[bool]> first_five: [false, false, false, false, false];
+    in property <[bool]> second_five: [false, false, false, false, false];
+    in property <[bool]> third_five: [false, false, false, false, false];
 
     GridLayout {
         min-height: 500px;
@@ -100,13 +103,13 @@ export component Dashboard inherits Window {
                 background: bg-color;
                 Text {
                     font-size: 30px;
-                    text: "L\{root.lap_number}";
+                    text: "L\{root.lap_number + 1}";
                     color: text-color;
                 }
             }
         }
 
-                // Center
+        // Center
         VerticalLayout {
             width: 50%;
             col: 1;
@@ -118,7 +121,7 @@ export component Dashboard inherits Window {
                     col: 0;
                     width: 5%; // Thin width
                     height: 100%;
-                    background: bg-color;
+                    background: @linear-gradient(0deg, red root.brake / 255 * 100, black 0%);
                     border-width: 1px;
                     border-color: white;
                 }
@@ -142,7 +145,7 @@ export component Dashboard inherits Window {
                     col: 2;
                     width: 5%; // Thin width
                     height: 100%;
-                    background: bg-color;
+                    background: @linear-gradient(0deg, green root.accel / 255 * 100, black 0%);
                     border-width: 1px;
                     border-color: white;
                 }

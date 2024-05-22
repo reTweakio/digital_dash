@@ -5,6 +5,7 @@ use local_ip_address::local_ip;
 
 pub struct PacketInfo {
     current_rpm: f32,
+    max_rpm: f32,
     speed: f32,
     best_lap: f32,
     current_lap: f32,
@@ -23,6 +24,10 @@ pub struct PacketInfo {
 impl PacketInfo {
     pub fn get_current_rpm(&self) -> f32 {
         return self.current_rpm
+    }
+
+    pub fn get_max_rpm(&self) -> f32 {
+        return self.max_rpm
     }
 
     pub fn get_speed(&self) -> f32 {
@@ -45,12 +50,12 @@ impl PacketInfo {
         return self.gear as i32
     }
 
-    pub fn get_accel(&self) -> i32 {
-        return self.accel as i32
+    pub fn get_accel(&self) -> f32 {
+        return self.accel as f32
     }
 
-    pub fn get_brake(&self) -> i32 {
-        return self.brake as i32
+    pub fn get_brake(&self) -> f32 {
+        return self.brake as f32
     }
 
     pub fn get_position(&self) -> i32 {
@@ -95,20 +100,21 @@ pub fn parse_packets(sender: Sender<PacketInfo>) {
         socket.recv_from(&mut buf).expect("Failed to receive data");
 
         let packet_info: PacketInfo = PacketInfo {
-            current_rpm: f32::from_le_bytes(buf[16..20].try_into().unwrap()),
-            speed: f32::from_le_bytes(buf[244..248].try_into().unwrap()),
+            current_rpm: f32::from_le_bytes(buf[16..20].try_into().unwrap()).round(),
+            speed: (f32::from_le_bytes(buf[244..248].try_into().unwrap()) * 2.237).round(),
             best_lap: f32::from_le_bytes(buf[284..288].try_into().unwrap()),
             current_lap: f32::from_le_bytes(buf[292..296].try_into().unwrap()),
+            max_rpm: f32::from_le_bytes(buf[7..11].try_into().unwrap()),
             current_race_time: f32::from_le_bytes(buf[296..300].try_into().unwrap()),
             gear: buf[307] as u8,
-            accel: buf[304] as u8,
-            brake: buf[305] as u8,
-            position: buf[303] as u8,
-            temp_left_f: f32::from_le_bytes(buf[248..252].try_into().unwrap()),
-            temp_right_f: f32::from_le_bytes(buf[252..256].try_into().unwrap()),
-            temp_left_r: f32::from_le_bytes(buf[256..260].try_into().unwrap()),
-            temp_right_r: f32::from_le_bytes(buf[260..264].try_into().unwrap()),
-            lap_number: u16::from_le_bytes(buf[288..290].try_into().unwrap())
+            accel: buf[303] as u8,
+            brake: buf[304] as u8,
+            position: buf[302] as u8,
+            temp_left_f: f32::from_le_bytes(buf[256..260].try_into().unwrap()).round(),
+            temp_right_f: f32::from_le_bytes(buf[260..264].try_into().unwrap()).round(),
+            temp_left_r: f32::from_le_bytes(buf[264..268].try_into().unwrap()).round(),
+            temp_right_r: f32::from_le_bytes(buf[268..272].try_into().unwrap()).round(),
+            lap_number: u16::from_le_bytes(buf[300..302].try_into().unwrap())
         };
 
         sender.send(packet_info).expect("Error sending packet data to thread");
