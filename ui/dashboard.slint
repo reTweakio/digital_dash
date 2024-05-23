@@ -214,7 +214,7 @@ export component Dashboard inherits Window {
                 background: bg-color;
                 Text {
                     font-size: 30px;
-                    text: "L\{root.lap_number + 1}";
+                    text: "L\{root.lap_number}";
                     color: text-color;
                 }
             }
@@ -228,7 +228,7 @@ export component Dashboard inherits Window {
             GridLayout {
                 // Left thin rectangle
                 Rectangle {
-                    background: @linear-gradient(0deg, red root.brake / 255 * 100, black 0%);
+                    background: @linear-gradient(0deg, red root.brake, black 0%);
                     row: 0;
                     col: 0;
                     width: 5%; // Thin width
@@ -253,7 +253,7 @@ export component Dashboard inherits Window {
                 }
                 // Right thin rectangle
                 Rectangle {
-                    background: @linear-gradient(0deg, green root.accel / 255 * 100, black 0%);
+                    background: @linear-gradient(0deg, green root.accel, black 0%);
                     row: 0;
                     col: 2;
                     width: 5%; // Thin width

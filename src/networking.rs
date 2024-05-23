@@ -10,76 +10,76 @@ pub struct PacketInfo {
     best_lap: f32,
     current_lap: f32,
     current_race_time: f32,
-    gear: u8,
-    accel: u8,
-    brake: u8,
-    position: u8,
+    gear: i32,
+    accel: f32,
+    brake: f32,
+    position: i32,
     temp_left_f: f32,
     temp_right_f: f32,
     temp_left_r: f32,
     temp_right_r: f32,
-    lap_number: u16
+    lap_number: i32
 }
 
 impl PacketInfo {
     pub fn get_current_rpm(&self) -> f32 {
-        return self.current_rpm
+        self.current_rpm
     }
 
     pub fn get_max_rpm(&self) -> f32 {
-        return self.max_rpm
+        self.max_rpm
     }
 
     pub fn get_speed(&self) -> f32 {
-        return self.speed
+        self.speed
     }
 
     pub fn get_best_lap(&self) -> f32 {
-        return self.best_lap
+        self.best_lap
     }
 
     pub fn get_current_lap(&self) -> f32 {
-        return self.current_lap
+        self.current_lap
     }
 
     pub fn get_current_race_time(&self) -> f32 {
-        return self.current_race_time
+        self.current_race_time
     }
 
     pub fn get_gear(&self) -> i32 {
-        return self.gear as i32
+        self.gear
     }
 
     pub fn get_accel(&self) -> f32 {
-        return self.accel as f32
+        self.accel / 255.0 * 100.0
     }
 
     pub fn get_brake(&self) -> f32 {
-        return self.brake as f32
+        self.brake / 255.0 * 100.0
     }
 
     pub fn get_position(&self) -> i32 {
-        return self.position as i32
+        self.position
     }
 
     pub fn get_temp_left_f(&self) -> f32 {
-        return self.temp_left_f
+        self.temp_left_f
     }
 
     pub fn get_temp_right_f(&self) -> f32 {
-        return self.temp_right_f
+        self.temp_right_f
     }
 
     pub fn get_temp_left_r(&self) -> f32 {
-        return self.temp_left_r
+        self.temp_left_r
     }
 
     pub fn get_temp_right_r(&self) -> f32 {
-        return self.temp_right_r
+        self.temp_right_r
     }
 
     pub fn get_lap_number(&self) -> i32 {
-        return self.lap_number as i32
+        self.lap_number + 1
     }
 }
 
@@ -88,8 +88,8 @@ fn setup_udp_socket() -> UdpSocket {
     let port: &str = "8080";
     let binding_addr: String = format!("{}:{}", ip_addr, port);
     let socket: UdpSocket = UdpSocket::bind(binding_addr).expect("Failed to bind to address");
-    println!("Successfully binded to udp socket");
-    return socket
+
+    socket
 }
 
 pub fn parse_packets(sender: Sender<PacketInfo>) {
@@ -106,15 +106,15 @@ pub fn parse_packets(sender: Sender<PacketInfo>) {
             best_lap: f32::from_le_bytes(buf[284..288].try_into().unwrap()),
             current_lap: f32::from_le_bytes(buf[292..296].try_into().unwrap()),
             current_race_time: f32::from_le_bytes(buf[296..300].try_into().unwrap()),
-            gear: buf[307] as u8,
-            accel: buf[303] as u8,
-            brake: buf[304] as u8,
-            position: buf[302] as u8,
+            gear: buf[307] as i32,
+            accel: buf[303] as f32,
+            brake: buf[304] as f32,
+            position: buf[302] as i32,
             temp_left_f: f32::from_le_bytes(buf[256..260].try_into().unwrap()).round(),
             temp_right_f: f32::from_le_bytes(buf[260..264].try_into().unwrap()).round(),
             temp_left_r: f32::from_le_bytes(buf[264..268].try_into().unwrap()).round(),
             temp_right_r: f32::from_le_bytes(buf[268..272].try_into().unwrap()).round(),
-            lap_number: u16::from_le_bytes(buf[300..302].try_into().unwrap())
+            lap_number: i32::from_le_bytes(buf[300..302].try_into().unwrap())
         };
 
         sender.send(packet_info).expect("Error sending packet data to thread");

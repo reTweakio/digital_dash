@@ -6,11 +6,11 @@ use crate::networking::PacketInfo;
 slint::include_modules!();
 
 fn update_rpm_lights(rpm: f32, max_rpm: f32, rpm_lights: &mut Vec<bool>) {
-    let step_size = max_rpm / rpm_lights.len() as f32;
+    let step_size: f32 = max_rpm / rpm_lights.len() as f32;
     let lights_on = (rpm / step_size).ceil() as usize;
 
-    for i in 0..rpm_lights.len() {
-        rpm_lights[i] = i < lights_on;
+    for (i, on_status) in rpm_lights.iter_mut().enumerate() {
+        *on_status = i < lights_on;
     }
 }
 
@@ -38,8 +38,8 @@ pub fn run_ui(receiver: Receiver<PacketInfo>) {
             let temp_left_r: f32 = packet_info.get_temp_left_r();
             let temp_right_r: f32 = packet_info.get_temp_right_r();
             let lap_number: i32 = packet_info.get_lap_number();
+        
             let mut rpm_lights: Vec<bool> = vec![false; 15];
-
             update_rpm_lights(current_rpm, max_rpm, &mut rpm_lights);
 
             weak_dashboard.upgrade_in_event_loop(move |dash: Dashboard| {
@@ -57,7 +57,7 @@ pub fn run_ui(receiver: Receiver<PacketInfo>) {
                 dash.set_temp_left_r(temp_left_r);
                 dash.set_temp_right_r(temp_right_r);
                 dash.set_lap_number(lap_number);
-                dash.set_rpm_lights(ModelRc::new(VecModel::from(rpm_lights)))
+                dash.set_rpm_lights(ModelRc::new(VecModel::from(rpm_lights)));
             }).unwrap();
         }
     });
