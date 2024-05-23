@@ -8,7 +8,7 @@ slint::include_modules!();
 fn update_rpm_lights(rpm: f32, max_rpm: f32, rpm_lights: &mut Vec<bool>) {
     let step_size = max_rpm / rpm_lights.len() as f32;
     let lights_on = (rpm / step_size).ceil() as usize;
-    
+
     for i in 0..rpm_lights.len() {
         rpm_lights[i] = i < lights_on;
     }
@@ -38,25 +38,27 @@ pub fn run_ui(receiver: Receiver<PacketInfo>) {
             let temp_left_r: f32 = packet_info.get_temp_left_r();
             let temp_right_r: f32 = packet_info.get_temp_right_r();
             let lap_number: i32 = packet_info.get_lap_number();
-
             let mut rpm_lights: Vec<bool> = vec![false; 15];
-            update_rpm_lights(current_rpm, max_rpm, &mut rpm_lights);
-            weak_dashboard.upgrade_in_event_loop(move |dashboard: Dashboard| dashboard.set_rpm_lights(ModelRc::new(VecModel::from(rpm_lights)))).unwrap();
 
-            weak_dashboard.upgrade_in_event_loop(move |dashboard: Dashboard| dashboard.set_rpm(current_rpm)).unwrap();
-            weak_dashboard.upgrade_in_event_loop(move |dashboard: Dashboard| dashboard.set_speed(speed)).unwrap();
-            weak_dashboard.upgrade_in_event_loop(move |dashboard: Dashboard| dashboard.set_best_lap(best_lap)).unwrap();
-            weak_dashboard.upgrade_in_event_loop(move |dashboard: Dashboard| dashboard.set_current_lap(current_lap)).unwrap();
-            weak_dashboard.upgrade_in_event_loop(move |dashboard: Dashboard| dashboard.set_race_time(race_time)).unwrap();
-            weak_dashboard.upgrade_in_event_loop(move |dashboard: Dashboard| dashboard.set_gear(gear)).unwrap();
-            weak_dashboard.upgrade_in_event_loop(move |dashboard: Dashboard| dashboard.set_accel(accel)).unwrap();
-            weak_dashboard.upgrade_in_event_loop(move |dashboard: Dashboard| dashboard.set_brake(brake)).unwrap();
-            weak_dashboard.upgrade_in_event_loop(move |dashboard: Dashboard| dashboard.set_position(position)).unwrap();
-            weak_dashboard.upgrade_in_event_loop(move |dashboard: Dashboard| dashboard.set_temp_left_f(temp_left_f)).unwrap();
-            weak_dashboard.upgrade_in_event_loop(move |dashboard: Dashboard| dashboard.set_temp_right_f(temp_right_f)).unwrap();
-            weak_dashboard.upgrade_in_event_loop(move |dashboard: Dashboard| dashboard.set_temp_left_r(temp_left_r)).unwrap();
-            weak_dashboard.upgrade_in_event_loop(move |dashboard: Dashboard| dashboard.set_temp_right_r(temp_right_r)).unwrap();
-            weak_dashboard.upgrade_in_event_loop(move |dashboard: Dashboard| dashboard.set_lap_number(lap_number)).unwrap();
+            update_rpm_lights(current_rpm, max_rpm, &mut rpm_lights);
+
+            weak_dashboard.upgrade_in_event_loop(move |dash: Dashboard| {
+                dash.set_rpm(current_rpm);
+                dash.set_speed(speed);
+                dash.set_best_lap(best_lap);
+                dash.set_current_lap(current_lap);
+                dash.set_race_time(race_time);
+                dash.set_gear(gear);
+                dash.set_accel(accel);
+                dash.set_brake(brake);
+                dash.set_position(position);
+                dash.set_temp_left_f(temp_left_f);
+                dash.set_temp_right_f(temp_right_f);
+                dash.set_temp_left_r(temp_left_r);
+                dash.set_temp_right_r(temp_right_r);
+                dash.set_lap_number(lap_number);
+                dash.set_rpm_lights(ModelRc::new(VecModel::from(rpm_lights)))
+            }).unwrap();
         }
     });
 
