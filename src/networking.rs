@@ -83,6 +83,7 @@ impl PacketInfo {
     }
 }
 
+
 fn setup_udp_socket() -> UdpSocket {
     let ip_addr: String = local_ip().unwrap().to_string();
     let port: &str = "8080";
@@ -90,6 +91,14 @@ fn setup_udp_socket() -> UdpSocket {
     let socket: UdpSocket = UdpSocket::bind(binding_addr).expect("Failed to bind to address");
 
     socket
+}
+
+fn parse_f32_from_bytes(buf: &[u8]) -> f32 {
+    f32::from_le_bytes(buf.try_into().expect("Failed to convert bytes to f32"))
+}
+
+fn parse_i32_from_bytes(buf: &[u8]) -> i32 {
+    i32::from_le_bytes(buf.try_into().expect("Failed to convert bytes to i32"))
 }
 
 pub fn parse_packets(sender: Sender<PacketInfo>) {
@@ -100,21 +109,21 @@ pub fn parse_packets(sender: Sender<PacketInfo>) {
         socket.recv_from(&mut buf).expect("Failed to receive data");
 
         let packet_info: PacketInfo = PacketInfo {
-            current_rpm: f32::from_le_bytes(buf[16..20].try_into().unwrap()).round(),
-            max_rpm: f32::from_le_bytes(buf[8..12].try_into().unwrap()),
-            speed: (f32::from_le_bytes(buf[244..248].try_into().unwrap()) * 2.237).round(),
-            best_lap: f32::from_le_bytes(buf[284..288].try_into().unwrap()),
-            current_lap: f32::from_le_bytes(buf[292..296].try_into().unwrap()),
-            current_race_time: f32::from_le_bytes(buf[296..300].try_into().unwrap()),
+            current_rpm: parse_f32_from_bytes(&buf[16..20]).round(),
+            max_rpm: parse_f32_from_bytes(&buf[8..12]),
+            speed: (parse_f32_from_bytes(&buf[244..248]) * 2.237).round(),
+            best_lap: parse_f32_from_bytes(&buf[284..288]),
+            current_lap: parse_f32_from_bytes(&buf[292..296]),
+            current_race_time: parse_f32_from_bytes(&buf[296..300]),
+            lap_number: parse_i32_from_bytes(&buf[300..302]),
+            position: buf[302] as i32,
             gear: buf[307] as i32,
             accel: buf[303] as f32,
             brake: buf[304] as f32,
-            position: buf[302] as i32,
-            temp_left_f: f32::from_le_bytes(buf[256..260].try_into().unwrap()).round(),
-            temp_right_f: f32::from_le_bytes(buf[260..264].try_into().unwrap()).round(),
-            temp_left_r: f32::from_le_bytes(buf[264..268].try_into().unwrap()).round(),
-            temp_right_r: f32::from_le_bytes(buf[268..272].try_into().unwrap()).round(),
-            lap_number: i32::from_le_bytes(buf[300..302].try_into().unwrap())
+            temp_left_f: parse_f32_from_bytes(&buf[256..260]).round(),
+            temp_right_f: parse_f32_from_bytes(&buf[260..264]).round(),
+            temp_left_r: parse_f32_from_bytes(&buf[264..268]).round(),
+            temp_right_r: parse_f32_from_bytes(&buf[268..272]).round(),
         };
 
         sender.send(packet_info).expect("Error sending packet data to thread");
