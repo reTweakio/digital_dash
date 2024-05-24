@@ -1,5 +1,6 @@
 use std::net::UdpSocket;
 use std::sync::mpsc::Sender;
+use std::vec;
 use local_ip_address::local_ip;
 
 
@@ -103,9 +104,9 @@ fn parse_i32_from_bytes(buf: &[u8]) -> i32 {
 
 pub fn parse_packets(sender: Sender<PacketInfo>) {
     let socket: UdpSocket = setup_udp_socket();
+    let mut buf: Vec<u8> = vec![0; 500];
 
     loop {
-        let mut buf: Vec<u8> = vec![0; 1024];
         socket.recv_from(&mut buf).expect("Failed to receive data");
 
         let packet_info: PacketInfo = PacketInfo {
