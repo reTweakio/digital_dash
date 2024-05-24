@@ -23,65 +23,35 @@ pub struct PacketInfo {
 }
 
 impl PacketInfo {
-    pub fn get_current_rpm(&self) -> f32 {
-        self.current_rpm
-    }
+    pub fn get_current_rpm(&self) -> f32 { self.current_rpm }
 
-    pub fn get_max_rpm(&self) -> f32 {
-        self.max_rpm
-    }
+    pub fn get_max_rpm(&self) -> f32 { self.max_rpm }
 
-    pub fn get_speed(&self) -> f32 {
-        self.speed
-    }
+    pub fn get_speed(&self) -> f32 { self.speed }
 
-    pub fn get_best_lap(&self) -> f32 {
-        self.best_lap
-    }
+    pub fn get_best_lap(&self) -> f32 { self.best_lap }
 
-    pub fn get_current_lap(&self) -> f32 {
-        self.current_lap
-    }
+    pub fn get_current_lap(&self) -> f32 { self.current_lap }
 
-    pub fn get_current_race_time(&self) -> f32 {
-        self.current_race_time
-    }
+    pub fn get_current_race_time(&self) -> f32 { self.current_race_time }
 
-    pub fn get_gear(&self) -> i32 {
-        self.gear
-    }
+    pub fn get_gear(&self) -> i32 { self.gear }
 
-    pub fn get_accel(&self) -> f32 {
-        self.accel / 255.0 * 100.0
-    }
+    pub fn get_accel(&self) -> f32 { self.accel / 255.0 * 100.0 }
 
-    pub fn get_brake(&self) -> f32 {
-        self.brake / 255.0 * 100.0
-    }
+    pub fn get_brake(&self) -> f32 { self.brake / 255.0 * 100.0 }
 
-    pub fn get_position(&self) -> i32 {
-        self.position
-    }
+    pub fn get_position(&self) -> i32 { self.position }
 
-    pub fn get_temp_left_f(&self) -> f32 {
-        self.temp_left_f
-    }
+    pub fn get_temp_left_f(&self) -> f32 { self.temp_left_f }
 
-    pub fn get_temp_right_f(&self) -> f32 {
-        self.temp_right_f
-    }
+    pub fn get_temp_right_f(&self) -> f32 { self.temp_right_f }
 
-    pub fn get_temp_left_r(&self) -> f32 {
-        self.temp_left_r
-    }
+    pub fn get_temp_left_r(&self) -> f32 { self.temp_left_r }
 
-    pub fn get_temp_right_r(&self) -> f32 {
-        self.temp_right_r
-    }
+    pub fn get_temp_right_r(&self) -> f32 { self.temp_right_r }
 
-    pub fn get_lap_number(&self) -> i32 {
-        self.lap_number + 1
-    }
+    pub fn get_lap_number(&self) -> i32 { self.lap_number + 1 }
 }
 
 
