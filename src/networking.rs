@@ -68,8 +68,8 @@ fn parse_f32_from_bytes(buf: &[u8]) -> f32 {
     f32::from_le_bytes(buf.try_into().expect("Failed to convert bytes to f32"))
 }
 
-fn parse_i32_from_bytes(buf: &[u8]) -> i32 {
-    i32::from_le_bytes(buf.try_into().expect("Failed to convert bytes to i32"))
+fn parse_i16_from_bytes(buf: &[u8]) -> i16 {
+    i16::from_le_bytes(buf.try_into().expect("Failed to convert bytes to i16"))
 }
 
 pub fn parse_packets(sender: Sender<PacketInfo>) {
@@ -86,7 +86,7 @@ pub fn parse_packets(sender: Sender<PacketInfo>) {
             best_lap: parse_f32_from_bytes(&buf[284..288]),
             current_lap: parse_f32_from_bytes(&buf[292..296]),
             current_race_time: parse_f32_from_bytes(&buf[296..300]),
-            lap_number: parse_i32_from_bytes(&buf[300..302]),
+            lap_number: parse_i16_from_bytes(&buf[300..302]) as i32,
             position: buf[302] as i32,
             gear: buf[307] as i32,
             accel: buf[303] as f32,
