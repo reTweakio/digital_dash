@@ -1,3 +1,4 @@
+import { VerticalBox } from "std-widgets.slint";
 export component Dashboard inherits Window {
     min-width: 800px;
     min-height: 500px;
@@ -18,11 +19,12 @@ export component Dashboard inherits Window {
     in property <percent> accel;
     in property <percent> brake;
 
-    property <color> bg-color: #141720;
-    property <color> text-color: #ff9a03;
+    property <color> bg-color: #000000;
+    property <color> text-color: #ffffff;
+    property <color> rpm_off: #C0C0C1;
     property <color> rpm1: #00FF00;
-    property <color> rpm2: #ff0400;
-    property <color> rpm3: #d53af8;
+    property <color> rpm2: #ffaa00;
+    property <color> rpm3: #ff0000;
     property <int> led_height: 25;
     property <int> led_width: 25;
     property <int> led_border: 15;
@@ -48,122 +50,122 @@ export component Dashboard inherits Window {
 
                 // RPM Light 1
                 if rpm_lights[0] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #00FF00; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm1; border-radius: led_border * 1px;
                 }
                 if !rpm_lights[0] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #C0C0C0; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
                 }
 
                 // RPM Light 2
                 if rpm_lights[1] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #00FF00; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm1; border-radius: led_border * 1px;
                 }
                 if !rpm_lights[1] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #C0C0C0; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
                 }
 
                 // RPM Light 3
                 if rpm_lights[2] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #00FF00; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm1; border-radius: led_border * 1px;
                 }
                 if !rpm_lights[2] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #C0C0C0; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
                 }
 
                 // RPM Light 4
                 if rpm_lights[3] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #00FF00; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm1; border-radius: led_border * 1px;
                 }
                 if !rpm_lights[3] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #C0C0C0; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
                 }
 
                 // RPM Light 5
                 if rpm_lights[4] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #00FF00; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm1; border-radius: led_border * 1px;
                 }
                 if !rpm_lights[4] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #C0C0C0; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
                 }
 
                 // RPM Light 6
                 if rpm_lights[5] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #FF0000; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm2; border-radius: led_border * 1px;
                 }
                 if !rpm_lights[5] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #C0C0C0; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
                 }
 
                 // RPM Light 7
                 if rpm_lights[6] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #FF0000; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm2; border-radius: led_border * 1px;
                 }
                 if !rpm_lights[6] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #C0C0C0; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
                 }
 
                 // RPM Light 8
                 if rpm_lights[7] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #FF0000; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm2; border-radius: led_border * 1px;
                 }
                 if !rpm_lights[7] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #C0C0C0; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
                 }
 
                 // RPM Light 9
                 if rpm_lights[8] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #FF0000; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm2; border-radius: led_border * 1px;
                 }
                 if !rpm_lights[8] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #C0C0C0; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
                 }
 
                 // RPM Light 10
                 if rpm_lights[9] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #FF0000; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm2; border-radius: led_border * 1px;
                 }
                 if !rpm_lights[9] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #C0C0C0; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
                 }
 
                 // RPM Light 11
                 if rpm_lights[10] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #800080; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm3; border-radius: led_border * 1px;
                 }
                 if !rpm_lights[10] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #C0C0C0; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
                 }
 
                 // RPM Light 12
                 if rpm_lights[11] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #800080; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm3; border-radius: led_border * 1px;
                 }
                 if !rpm_lights[11] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #C0C0C0; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
                 }
 
                 // RPM Light 13
                 if rpm_lights[12] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #800080; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm3; border-radius: led_border * 1px;
                 }
                 if !rpm_lights[12] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #C0C0C0; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
                 }
 
                 // RPM Light 14
                 if rpm_lights[13] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #800080; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm3; border-radius: led_border * 1px;
                 }
                 if !rpm_lights[13] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #C0C0C0; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
                 }
 
                 // RPM Light 15
                 if rpm_lights[14] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #800080; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm3; border-radius: led_border * 1px;
                 }
                 if !rpm_lights[14] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: #C0C0C0; border-radius: led_border * 1px;
+                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
                 }
             }
         }
@@ -173,14 +175,27 @@ export component Dashboard inherits Window {
             width: 25%;
             col: 0;
             row: 1;
+
             Rectangle {
                 border-width: 1px;
                 border-color: white;
                 background: bg-color;
-                Text {
-                    font-size: 30px;
-                    text: "\{root.speed}\nspeed";
-                    color: text-color;
+
+                VerticalBox {
+                    Text {
+                        font-size: 40px;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                        text: "\{root.speed}";
+                        color: text-color;
+                    }
+
+                    Text {
+                        font-size: 15px;
+                        horizontal-alignment: center;
+                        text: "mph";
+                        color: text-color;
+                    }
                 }
             }
 
@@ -188,10 +203,22 @@ export component Dashboard inherits Window {
                 border-width: 1px;
                 border-color: white;
                 background: bg-color;
-                Text {
-                    font-size: 30px;
-                    text: "\{root.rpm}\nrpm";
-                    color: text-color;
+
+                VerticalBox {
+                    Text {
+                        font-size: 40px;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                        text: "\{root.rpm}";
+                        color: text-color;
+                    }
+
+                    Text {
+                        font-size: 15px;
+                        horizontal-alignment: center;
+                        text: "rpm";
+                        color: text-color;
+                    }
                 }
             }
 
@@ -225,15 +252,16 @@ export component Dashboard inherits Window {
             width: 50%;
             col: 1;
             row: 1;
+
             GridLayout {
+
                 // Left thin rectangle
                 Rectangle {
                     background: @linear-gradient(0deg, red root.brake, black 0%);
                     row: 0;
                     col: 0;
-                    width: 5%; // Thin width
+                    width: 5%;
                     height: 100%;
-                    //background: bg-color;
                     border-width: 1px;
                     border-color: white;
                 }
@@ -245,10 +273,21 @@ export component Dashboard inherits Window {
                     background: bg-color;
                     border-width: 1px;
                     border-color: white;
-                    Text {
-                        font-size: 100px;
-                        text: "\{root.gear}\ngear";
-                        color: text-color;
+                    VerticalBox {
+                        Text {
+                            font-size: 100px;
+                            text: "\{root.gear}";
+                            horizontal-alignment: center;
+                            vertical-alignment: center;
+                            color: text-color;
+                        }
+
+                        Text {
+                            font-size: 20px;
+                            text: "Gear";
+                            horizontal-alignment: center;
+                            color: text-color;
+                        }
                     }
                 }
                 // Right thin rectangle
@@ -256,9 +295,8 @@ export component Dashboard inherits Window {
                     background: @linear-gradient(0deg, green root.accel, black 0%);
                     row: 0;
                     col: 2;
-                    width: 5%; // Thin width
+                    width: 5%;
                     height: 100%;
-                    //background: bg-color;
                     border-width: 1px;
                     border-color: white;
                 }
@@ -282,7 +320,8 @@ export component Dashboard inherits Window {
                 height: 10%;
                 background: bg-color;
                 Text {
-                    text: "\{root.delta}\nDelta";
+                    font-size: 15px;
+                    text: "Delta: \{root.delta}";
                     color: text-color;
                 }
             }
@@ -293,7 +332,8 @@ export component Dashboard inherits Window {
                 height: 10%;
                 background: bg-color;
                 Text {
-                    text: "\{root.best_lap}\nBest";
+                    font-size: 15px;
+                    text: "Best: \{root.best_lap}";
                     color: text-color;
                 }
             }
