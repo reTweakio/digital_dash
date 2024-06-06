@@ -1,6 +1,6 @@
 use std::thread;
 use std::sync::mpsc::Receiver;
-use slint::{ModelRc, VecModel};
+use slint::{ModelRc, VecModel, SharedString};
 use crate::networking::PacketInfo;
 
 slint::include_modules!();
@@ -25,8 +25,8 @@ pub fn run_ui(receiver: Receiver<PacketInfo>) {
             let current_rpm: f32 = packet_info.get_current_rpm();
             let max_rpm: f32 = packet_info.get_max_rpm();
             let speed: f32 = packet_info.get_speed();
-            let best_lap: f32 = packet_info.get_best_lap();
-            let current_lap: f32 = packet_info.get_current_lap();
+            let best_lap: String = packet_info.get_best_lap();
+            let current_lap: String = packet_info.get_current_lap();
             let race_time: f32 = packet_info.get_current_race_time();
             let gear: i32 = packet_info.get_gear();
             let accel: f32 = packet_info.get_accel();
@@ -44,8 +44,8 @@ pub fn run_ui(receiver: Receiver<PacketInfo>) {
             weak_dashboard.upgrade_in_event_loop(move |dash: Dashboard| {
                 dash.set_rpm(current_rpm);
                 dash.set_speed(speed);
-                dash.set_best_lap(best_lap);
-                dash.set_current_lap(current_lap);
+                dash.set_best_lap(SharedString::from(best_lap));
+                dash.set_current_lap(SharedString::from(current_lap));
                 dash.set_race_time(race_time);
                 dash.set_gear(gear);
                 dash.set_accel(accel);

@@ -29,9 +29,9 @@ impl PacketInfo {
 
     pub fn get_speed(&self) -> f32 { self.speed }
 
-    pub fn get_best_lap(&self) -> f32 { self.best_lap }
+    pub fn get_best_lap(&self) -> String { Self::format_time(self.best_lap) }
 
-    pub fn get_current_lap(&self) -> f32 { self.current_lap }
+    pub fn get_current_lap(&self) -> String { Self::format_time(self.current_lap) }
 
     pub fn get_current_race_time(&self) -> f32 { self.current_race_time }
 
@@ -52,6 +52,14 @@ impl PacketInfo {
     pub fn get_temp_right_r(&self) -> f32 { self.temp_right_r }
 
     pub fn get_lap_number(&self) -> i32 { self.lap_number + 1 }
+
+    fn format_time(time: f32) -> String {
+        let minutes: i32 = (time / 60.0).floor() as i32;
+        let seconds: i32 = (time % 60.0).floor() as i32;
+        let milliseconds: i32 = ((time % 1.0) * 1000.0).floor() as i32;
+
+        format!("{:02}:{:02}.{:03}", minutes, seconds, milliseconds)
+    }
 }
 
 
