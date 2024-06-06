@@ -53,6 +53,8 @@ impl PacketInfo {
 
     pub fn get_lap_number(&self) -> i32 { self.lap_number + 1 }
 
+    pub fn get_delta (&self) -> String { Self::format_time(self.best_lap - self.current_lap) }
+
     fn format_time(time: f32) -> String {
         let minutes: i32 = (time / 60.0).floor() as i32;
         let seconds: i32 = (time % 60.0).floor() as i32;

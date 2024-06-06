@@ -37,6 +37,7 @@ pub fn run_ui(receiver: Receiver<PacketInfo>) {
             let temp_left_r: f32 = packet_info.get_temp_left_r();
             let temp_right_r: f32 = packet_info.get_temp_right_r();
             let lap_number: i32 = packet_info.get_lap_number();
+            let delta: SharedString = SharedString::from(packet_info.get_delta());
         
             let mut rpm_lights: Vec<bool> = vec![false; 15];
             update_rpm_lights(current_rpm, max_rpm, &mut rpm_lights);
@@ -57,6 +58,7 @@ pub fn run_ui(receiver: Receiver<PacketInfo>) {
                 dash.set_temp_right_r(temp_right_r);
                 dash.set_lap_number(lap_number);
                 dash.set_rpm_lights(ModelRc::new(VecModel::from(rpm_lights)));
+                dash.set_delta(delta);
             }).unwrap();
         }
     });
