@@ -429,22 +429,38 @@ export component Dashboard inherits Window {
                 height: 10%;
                 background: bg-color;
 
-                if root.delta == "": Text {
-                    font-size: 15px;
-                    text: "Delta: N/A";
-                    color: text-color;
-                }
-
-                if root.new_best: Text {
-                    font-size: 15px;
-                    text: "Delta: \{root.delta}";
-                    color: #00FF00;
-                }
-
-                if (!root.new_best && root.delta != ""): Text { 
-                    font-size: 15px;
-                    text: "Delta: +\{root.delta}";
-                    color: #FF0000;
+                HorizontalLayout {
+                    Text {
+                        font-size: 15px;
+                        text: "Delta: ";
+                        color: text-color;
+                        horizontal-alignment: right;
+                        vertical-alignment: center;
+                    }
+                    
+                    if root.delta == "": Text {
+                        font-size: 15px;
+                        text: "N/A";
+                        color: text-color;
+                        horizontal-alignment: left;
+                        vertical-alignment: center;
+                    }
+    
+                    if root.new_best: Text {
+                        font-size: 15px;
+                        text: "Delta: \{root.delta}";
+                        color: #00FF00;
+                        horizontal-alignment: left;
+                        vertical-alignment: center;
+                    }
+    
+                    if (!root.new_best && root.delta != ""): Text { 
+                        font-size: 15px;
+                        text: "+\{root.delta}";
+                        color: #FF0000;
+                        horizontal-alignment: left;
+                        vertical-alignment: center;
+                    }
                 }
             }
 
