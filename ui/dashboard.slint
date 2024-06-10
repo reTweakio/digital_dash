@@ -7,7 +7,6 @@ export component Dashboard inherits Window {
     in property <float> speed;
     in property <string> best_lap;
     in property <string> current_lap;
-    in property <float> race_time;
     in property <string> delta;
     in property <float> temp_left_f;
     in property <float> temp_right_f;
@@ -18,6 +17,7 @@ export component Dashboard inherits Window {
     in property <int> position;
     in property <percent> accel;
     in property <percent> brake;
+    in property <bool> new_best;
 
     property <color> bg-color: #000000;
     property <color> text-color: #ffffff;
@@ -28,9 +28,26 @@ export component Dashboard inherits Window {
     property <int> led_height: 25;
     property <int> led_width: 25;
     property <int> led_border: 15;
+    property <color> delta_color: text-color;
 
     // Define a model for RPM lights
-    in property <[bool]> rpm_lights: [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false];
+    in property <[bool]> rpm_lights: [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+    ];
 
     GridLayout {
         min-height: 500px;
@@ -49,123 +66,213 @@ export component Dashboard inherits Window {
                 alignment: center;
 
                 // RPM Light 1
-                if rpm_lights[0] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm1; border-radius: led_border * 1px;
+                if rpm_lights[0]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm1;
+                    border-radius: led_border * 1px;
                 }
-                if !rpm_lights[0] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
+                if !rpm_lights[0]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm_off;
+                    border-radius: led_border * 1px;
                 }
 
                 // RPM Light 2
-                if rpm_lights[1] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm1; border-radius: led_border * 1px;
+                if rpm_lights[1]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm1;
+                    border-radius: led_border * 1px;
                 }
-                if !rpm_lights[1] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
+                if !rpm_lights[1]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm_off;
+                    border-radius: led_border * 1px;
                 }
 
                 // RPM Light 3
-                if rpm_lights[2] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm1; border-radius: led_border * 1px;
+                if rpm_lights[2]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm1;
+                    border-radius: led_border * 1px;
                 }
-                if !rpm_lights[2] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
+                if !rpm_lights[2]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm_off;
+                    border-radius: led_border * 1px;
                 }
 
                 // RPM Light 4
-                if rpm_lights[3] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm1; border-radius: led_border * 1px;
+                if rpm_lights[3]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm1;
+                    border-radius: led_border * 1px;
                 }
-                if !rpm_lights[3] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
+                if !rpm_lights[3]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm_off;
+                    border-radius: led_border * 1px;
                 }
 
                 // RPM Light 5
-                if rpm_lights[4] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm1; border-radius: led_border * 1px;
+                if rpm_lights[4]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm1;
+                    border-radius: led_border * 1px;
                 }
-                if !rpm_lights[4] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
+                if !rpm_lights[4]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm_off;
+                    border-radius: led_border * 1px;
                 }
 
                 // RPM Light 6
-                if rpm_lights[5] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm2; border-radius: led_border * 1px;
+                if rpm_lights[5]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm2;
+                    border-radius: led_border * 1px;
                 }
-                if !rpm_lights[5] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
+                if !rpm_lights[5]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm_off;
+                    border-radius: led_border * 1px;
                 }
 
                 // RPM Light 7
-                if rpm_lights[6] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm2; border-radius: led_border * 1px;
+                if rpm_lights[6]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm2;
+                    border-radius: led_border * 1px;
                 }
-                if !rpm_lights[6] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
+                if !rpm_lights[6]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm_off;
+                    border-radius: led_border * 1px;
                 }
 
                 // RPM Light 8
-                if rpm_lights[7] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm2; border-radius: led_border * 1px;
+                if rpm_lights[7]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm2;
+                    border-radius: led_border * 1px;
                 }
-                if !rpm_lights[7] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
+                if !rpm_lights[7]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm_off;
+                    border-radius: led_border * 1px;
                 }
 
                 // RPM Light 9
-                if rpm_lights[8] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm2; border-radius: led_border * 1px;
+                if rpm_lights[8]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm2;
+                    border-radius: led_border * 1px;
                 }
-                if !rpm_lights[8] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
+                if !rpm_lights[8]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm_off;
+                    border-radius: led_border * 1px;
                 }
 
                 // RPM Light 10
-                if rpm_lights[9] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm2; border-radius: led_border * 1px;
+                if rpm_lights[9]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm2;
+                    border-radius: led_border * 1px;
                 }
-                if !rpm_lights[9] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
+                if !rpm_lights[9]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm_off;
+                    border-radius: led_border * 1px;
                 }
 
                 // RPM Light 11
-                if rpm_lights[10] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm3; border-radius: led_border * 1px;
+                if rpm_lights[10]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm3;
+                    border-radius: led_border * 1px;
                 }
-                if !rpm_lights[10] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
+                if !rpm_lights[10]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm_off;
+                    border-radius: led_border * 1px;
                 }
 
                 // RPM Light 12
-                if rpm_lights[11] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm3; border-radius: led_border * 1px;
+                if rpm_lights[11]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm3;
+                    border-radius: led_border * 1px;
                 }
-                if !rpm_lights[11] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
+                if !rpm_lights[11]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm_off;
+                    border-radius: led_border * 1px;
                 }
 
                 // RPM Light 13
-                if rpm_lights[12] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm3; border-radius: led_border * 1px;
+                if rpm_lights[12]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm3;
+                    border-radius: led_border * 1px;
                 }
-                if !rpm_lights[12] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
+                if !rpm_lights[12]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm_off;
+                    border-radius: led_border * 1px;
                 }
 
                 // RPM Light 14
-                if rpm_lights[13] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm3; border-radius: led_border * 1px;
+                if rpm_lights[13]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm3;
+                    border-radius: led_border * 1px;
                 }
-                if !rpm_lights[13] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
+                if !rpm_lights[13]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm_off;
+                    border-radius: led_border * 1px;
                 }
 
                 // RPM Light 15
-                if rpm_lights[14] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm3; border-radius: led_border * 1px;
+                if rpm_lights[14]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm3;
+                    border-radius: led_border * 1px;
                 }
-                if !rpm_lights[14] : Rectangle { 
-                    width: led_width * 1px; height: led_height * 1px; background: rpm_off; border-radius: led_border * 1px;
+                if !rpm_lights[14]: Rectangle {
+                    width: led_width * 1px;
+                    height: led_height * 1px;
+                    background: rpm_off;
+                    border-radius: led_border * 1px;
                 }
             }
         }
@@ -265,6 +372,7 @@ export component Dashboard inherits Window {
                     border-width: 1px;
                     border-color: white;
                 }
+
                 // Gear rectangle
                 Rectangle {
                     row: 0;
@@ -290,6 +398,7 @@ export component Dashboard inherits Window {
                         }
                     }
                 }
+
                 // Right thin rectangle
                 Rectangle {
                     background: @linear-gradient(0deg, green root.accel, black 0%);
@@ -319,10 +428,23 @@ export component Dashboard inherits Window {
                 border-color: white;
                 height: 10%;
                 background: bg-color;
-                Text {
+
+                if root.delta == "": Text {
+                    font-size: 15px;
+                    text: "Delta: N/A";
+                    color: text-color;
+                }
+
+                if root.new_best: Text {
                     font-size: 15px;
                     text: "Delta: \{root.delta}";
-                    color: text-color;
+                    color: #00FF00;
+                }
+
+                if (!root.new_best && root.delta != ""): Text { 
+                    font-size: 15px;
+                    text: "Delta: +\{root.delta}";
+                    color: #FF0000;
                 }
             }
 
@@ -365,7 +487,8 @@ export component Dashboard inherits Window {
                         Rectangle {
                             width: 50%;
                             border-width: 1px;
-                            border-color: white;background: bg-color;
+                            border-color: white;
+                            background: bg-color;
                             Text {
                                 font-size: 30px;
                                 text: "\{root.temp_right_f}";

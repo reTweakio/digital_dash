@@ -10,7 +10,7 @@ pub struct PacketInfo {
     speed: f32,
     best_lap: f32,
     current_lap: f32,
-    current_race_time: f32,
+    last_lap: f32,
     gear: i32,
     accel: f32,
     brake: f32,
@@ -33,7 +33,7 @@ impl PacketInfo {
 
     pub fn get_current_lap(&self) -> String { Self::format_time(self.current_lap) }
 
-    pub fn get_current_race_time(&self) -> f32 { self.current_race_time }
+    pub fn get_last_lap(&self) -> Option<f32> { Some(self.last_lap) }
 
     pub fn get_gear(&self) -> i32 { self.gear }
 
@@ -53,14 +53,20 @@ impl PacketInfo {
 
     pub fn get_lap_number(&self) -> i32 { self.lap_number + 1 }
 
-    pub fn get_delta (&self) -> String { Self::format_time(self.best_lap - self.current_lap) }
+    pub fn get_delta (&self) -> String { Self::format_time(self.last_lap - self.best_lap) }
 
     fn format_time(time: f32) -> String {
         let minutes: i32 = (time / 60.0).floor() as i32;
         let seconds: i32 = (time % 60.0).floor() as i32;
         let milliseconds: i32 = ((time % 1.0) * 1000.0).floor() as i32;
 
-        format!("{:02}:{:02}.{:03}", minutes, seconds, milliseconds)
+        if time < 0.0 {
+            format!("-{:02}:{:02}.{:03}", minutes.abs(), seconds.abs(), milliseconds.abs())
+        } 
+
+        else {
+            format!("{:02}:{:02}.{:03}", minutes, seconds, milliseconds)
+        }
     }
 }
 
@@ -95,7 +101,7 @@ pub fn parse_packets(sender: Sender<PacketInfo>) {
             speed: (parse_f32_from_bytes(&buf[244..248]) * 2.237).round(),
             best_lap: parse_f32_from_bytes(&buf[284..288]),
             current_lap: parse_f32_from_bytes(&buf[292..296]),
-            current_race_time: parse_f32_from_bytes(&buf[296..300]),
+            last_lap: parse_f32_from_bytes(&buf[288..292]),
             lap_number: parse_i16_from_bytes(&buf[300..302]) as i32,
             position: buf[302] as i32,
             gear: buf[307] as i32,

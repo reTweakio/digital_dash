@@ -1,14 +1,14 @@
-use std::thread;
-use std::sync::mpsc::Receiver;
-use slint::{ModelRc, VecModel, SharedString};
 use crate::networking::PacketInfo;
+use slint::{ModelRc, SharedString, VecModel};
+use std::sync::mpsc::Receiver;
+use std::thread;
 
 slint::include_modules!();
 
 fn update_rpm_lights(rpm: f32, max_rpm: f32, rpm_lights: &mut Vec<bool>) {
     let starting_rpm: f32 = max_rpm * 0.5;
     let step_size: f32 = ((max_rpm - 1000.0) - starting_rpm) / (rpm_lights.len() as f32);
-    
+
     for (i, on_status) in rpm_lights.iter_mut().enumerate() {
         *on_status = rpm >= starting_rpm + (step_size * i as f32);
     }
@@ -27,7 +27,6 @@ pub fn run_ui(receiver: Receiver<PacketInfo>) {
             let speed: f32 = packet_info.get_speed();
             let best_lap: String = packet_info.get_best_lap();
             let current_lap: String = packet_info.get_current_lap();
-            let race_time: f32 = packet_info.get_current_race_time();
             let gear: i32 = packet_info.get_gear();
             let accel: f32 = packet_info.get_accel();
             let brake: f32 = packet_info.get_brake();
@@ -37,8 +36,15 @@ pub fn run_ui(receiver: Receiver<PacketInfo>) {
             let temp_left_r: f32 = packet_info.get_temp_left_r();
             let temp_right_r: f32 = packet_info.get_temp_right_r();
             let lap_number: i32 = packet_info.get_lap_number();
-            let delta: SharedString = SharedString::from(packet_info.get_delta());
-        
+
+            let mut delta: String = String::from("");
+            let mut new_best: bool = true;
+
+            if packet_info.get_last_lap().is_some() {
+                delta = packet_info.get_delta();
+                new_best = delta.starts_with('-');
+            }
+
             let mut rpm_lights: Vec<bool> = vec![false; 15];
             update_rpm_lights(current_rpm, max_rpm, &mut rpm_lights);
 
@@ -47,7 +53,6 @@ pub fn run_ui(receiver: Receiver<PacketInfo>) {
                 dash.set_speed(speed);
                 dash.set_best_lap(SharedString::from(best_lap));
                 dash.set_current_lap(SharedString::from(current_lap));
-                dash.set_race_time(race_time);
                 dash.set_gear(gear);
                 dash.set_accel(accel);
                 dash.set_brake(brake);
@@ -58,8 +63,9 @@ pub fn run_ui(receiver: Receiver<PacketInfo>) {
                 dash.set_temp_right_r(temp_right_r);
                 dash.set_lap_number(lap_number);
                 dash.set_rpm_lights(ModelRc::new(VecModel::from(rpm_lights)));
-                dash.set_delta(delta);
-            }).unwrap();
+                dash.set_delta(SharedString::from(delta));
+                dash.set_new_best(new_best);
+                }).unwrap();
         }
     });
 
