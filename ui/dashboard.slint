@@ -1,4 +1,21 @@
 import { VerticalBox } from "std-widgets.slint";
+
+component TireRectangle inherits Rectangle{
+    in property <color> bg-color;
+    in property <color> text-color;
+    in property <float> tire_temp;
+    Rectangle {
+        border-width: 1px;
+        border-color: white;
+        background: bg-color;
+        Text {
+            font-size: 20px;
+            text: "\{tire_temp}°F";
+            color: text-color;
+        }
+    }
+}
+
 export component Dashboard inherits Window {
     min-width: 800px;
     min-height: 500px;
@@ -283,56 +300,30 @@ export component Dashboard inherits Window {
                     HorizontalLayout {
                         height: 50%;
                         width: 50%;
-                        Rectangle {
-                            width: 50%;
-                            border-width: 1px;
-                            border-color: white;
-                            background: bg-color;
-                            Text {
-                                font-size: 20px;
-                                text: "\{root.temp_left_f}°F";
-                                color: text-color;
-                            }
+                        TireRectangle {
+                            bg-color: bg-color;
+                            text-color: text-color;
+                            tire_temp: root.temp_left_f;
                         }
-
-                        Rectangle {
-                            width: 50%;
-                            border-width: 1px;
-                            border-color: white;
-                            background: bg-color;
-                            Text {
-                                font-size: 20px;
-                                text: "\{root.temp_right_f}°F";
-                                color: text-color;
-                            }
+                        TireRectangle {
+                            bg-color: bg-color;
+                            text-color: text-color;
+                            tire_temp: root.temp_right_f;
                         }
                     }
 
                     HorizontalLayout {
                         height: 50%;
                         width: 50%;
-                        Rectangle {
-                            width: 50%;
-                            border-width: 1px;
-                            border-color: white;
-                            background: bg-color;
-                            Text {
-                                font-size: 20px;
-                                text: "\{root.temp_left_r}°F";
-                                color: text-color;
-                            }
+                        TireRectangle {
+                            bg-color: bg-color;
+                            text-color: text-color;
+                            tire_temp: root.temp_left_r;
                         }
-
-                        Rectangle {
-                            width: 50%;
-                            border-width: 1px;
-                            border-color: white;
-                            background: bg-color;
-                            Text {
-                                font-size: 20px;
-                                text: "\{root.temp_right_r}°F";
-                                color: text-color;
-                            }
+                        TireRectangle {
+                            bg-color: bg-color;
+                            text-color: text-color;
+                            tire_temp: root.temp_right_r;
                         }
                     }
                 }
