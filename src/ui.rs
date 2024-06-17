@@ -51,7 +51,7 @@ pub fn run_ui(receiver: Receiver<PacketInfo>) {
         let mut delta: String = String::from("");
         let mut new_best: bool = true;
 
-        if packet_info.get_last_lap().is_some() {
+        if lap_number > 2 {
             delta = packet_info.get_delta();
             new_best = delta.starts_with('-');
         }

@@ -47,24 +47,7 @@ export component Dashboard inherits Window {
     property <int> led_border: 15;
     property <color> delta_color: text-color;
 
-    // Define a model for RPM lights
-    in property <[bool]> rpm_lights: [
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
-    ];
+    in property <[bool]> rpm_lights: [false, false, false, false,false, false, false, false, false, false, false, false, false, false, false];
 
     GridLayout {
         min-height: 500px;
@@ -259,14 +242,14 @@ export component Dashboard inherits Window {
                         horizontal-alignment: left;
                         vertical-alignment: center;
                     }
-                    if root.new_best: Text {
+                    if root.new_best && root.delta != "": Text {
                         font-size: 15px;
-                        text: "Delta: \{root.delta}";
+                        text: "\{root.delta}";
                         color: #00FF00;
                         horizontal-alignment: left;
                         vertical-alignment: center;
                     }
-                    if (!root.new_best && root.delta != ""): Text {
+                    if !root.new_best && root.delta != "": Text {
                         font-size: 15px;
                         text: "+\{root.delta}";
                         color: #FF0000;

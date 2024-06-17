@@ -1,6 +1,5 @@
 use std::net::UdpSocket;
 use std::sync::mpsc::Sender;
-use std::vec;
 use local_ip_address::local_ip;
 
 
@@ -32,8 +31,6 @@ impl PacketInfo {
     pub fn get_best_lap(&self) -> String { Self::format_time(self.best_lap) }
 
     pub fn get_current_lap(&self) -> String { Self::format_time(self.current_lap) }
-
-    pub fn get_last_lap(&self) -> Option<f32> { Some(self.last_lap) }
 
     pub fn get_gear(&self) -> i32 { self.gear }
 
