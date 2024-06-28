@@ -68,7 +68,7 @@ export component Dashboard inherits Window {
                 for led in rpm_lights.length: Rectangle {
                     width: led_width * 1px;
                     height: led_height * 1px;
-                    background: rpm_lights[led] ? rpm1 : rpm_lights[led] && led > 4 ? rpm2 : rpm_lights[led] && led > 9 ? rpm3 : rpm_off;
+                    background: rpm_lights[led] && led < 5 ? rpm1 : rpm_lights[led] && led < 10 ? rpm2 : rpm_lights[led] && led < 15 ? rpm3 : rpm_off;
                     border-radius: led_border * 1px;
                 }
             }
