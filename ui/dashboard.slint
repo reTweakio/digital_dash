@@ -1,6 +1,6 @@
 import { VerticalBox } from "std-widgets.slint";
 
-component TireRectangle inherits Rectangle{
+component TireRectangle inherits Rectangle {
     in property <color> bg-color;
     in property <color> text-color;
     in property <float> tire_temp;
@@ -47,7 +47,23 @@ export component Dashboard inherits Window {
     property <int> led_border: 15;
     property <color> delta_color: text-color;
 
-    in property <[bool]> rpm_lights: [false, false, false, false,false, false, false, false, false, false, false, false, false, false, false];
+    in property <[bool]> rpm_lights: [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+    ];
 
     GridLayout {
         min-height: 500px;
@@ -288,6 +304,7 @@ export component Dashboard inherits Window {
                             text-color: text-color;
                             tire_temp: root.temp_left_f;
                         }
+
                         TireRectangle {
                             bg-color: bg-color;
                             text-color: text-color;
@@ -303,6 +320,7 @@ export component Dashboard inherits Window {
                             text-color: text-color;
                             tire_temp: root.temp_left_r;
                         }
+
                         TireRectangle {
                             bg-color: bg-color;
                             text-color: text-color;

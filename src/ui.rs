@@ -48,14 +48,6 @@ pub fn run_ui(receiver: Receiver<PacketInfo>) {
         let temp_right_r: f32 = packet_info.get_temp_right_r();
         let lap_number: i32 = packet_info.get_lap_number();
 
-        let mut delta: String = String::from("");
-        let mut new_best: bool = true;
-
-        if lap_number > 2 {
-            delta = packet_info.get_delta();
-            new_best = delta.starts_with('-');
-        }
-
         let mut rpm_lights: Vec<bool> = vec![false; 15];
         update_rpm_lights(current_rpm, max_rpm, &mut rpm_lights);
 
@@ -74,8 +66,14 @@ pub fn run_ui(receiver: Receiver<PacketInfo>) {
             dash.set_temp_right_r(temp_right_r);
             dash.set_lap_number(lap_number);
             dash.set_rpm_lights(ModelRc::new(VecModel::from(rpm_lights)));
-            dash.set_delta(SharedString::from(delta));
-            dash.set_new_best(new_best);
+
+            if lap_number > 2 {
+                let delta: String = packet_info.get_delta();
+                let new_best: bool = delta.starts_with('-');
+
+                dash.set_delta(SharedString::from(delta));
+                dash.set_new_best(new_best);
+            }
         }) {
             Ok(_) => (),
             Err(err) => {
