@@ -50,12 +50,14 @@ impl PacketInfo {
 
     pub fn get_lap_number(&self) -> i32 { self.lap_number + 1 }
 
-    pub fn get_delta(&self) -> String { Self::format_time(self.last_lap - self.best_lap) }
+    pub fn get_delta(&self) -> String { 
+        Self::format_time(self.last_lap - self.best_lap)
+    }
 
     fn format_time(time: f32) -> String {
-        let minutes: i32 = (time.abs() / 60.0) as i32;
-        let seconds: i32 = (time.abs() % 60.0) as i32;
-        let milliseconds: i32 = (time.abs() * 1000.0) as i32 % 1000;
+        let minutes: i32 = (time.abs() / 60.0).round() as i32;
+        let seconds: i32 = (time.abs() % 60.0).round() as i32;
+        let milliseconds: i32 = (time.abs() * 1000.0).round() as i32 % 1000;
 
         if time < 0.0 {
             format!("-{:02}:{:02}.{:03}", minutes, seconds, milliseconds)

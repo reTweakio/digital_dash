@@ -70,7 +70,6 @@ pub fn run_ui(receiver: Receiver<PacketInfo>) {
             if lap_number > 2 {
                 let delta: String = packet_info.get_delta();
                 let new_best: bool = delta.starts_with('-');
-
                 dash.set_delta(SharedString::from(delta));
                 dash.set_new_best(new_best);
             }
