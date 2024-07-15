@@ -8,6 +8,7 @@ pub struct PacketInfo {
     max_rpm: f32,
     speed: f32,
     best_lap: f32,
+    prev_best: f32,
     current_lap: f32,
     last_lap: f32,
     gear: i32,
@@ -51,12 +52,18 @@ impl PacketInfo {
     pub fn get_lap_number(&self) -> i32 { self.lap_number + 1 }
 
     pub fn get_delta(&self) -> String { 
-        Self::format_time(self.last_lap - self.best_lap)
+        let delta = if self.last_lap == self.best_lap {
+            self.last_lap - self.prev_best
+        } else {
+            self.last_lap - self.best_lap
+        };
+
+        Self::format_time(delta)
     }
 
     fn format_time(time: f32) -> String {
-        let minutes: i32 = (time.abs() / 60.0).round() as i32;
-        let seconds: i32 = (time.abs() % 60.0).round() as i32;
+        let minutes: i32 = (time.abs() / 60.0).floor() as i32;
+        let seconds: i32 = (time.abs() % 60.0).floor() as i32;
         let milliseconds: i32 = (time.abs() * 1000.0).round() as i32 % 1000;
 
         if time < 0.0 {
@@ -113,6 +120,7 @@ fn parse_i16_from_bytes(buf: &[u8]) -> i16 {
 pub fn parse_packets(sender: Sender<PacketInfo>) {
     let socket: UdpSocket = setup_udp_socket();
     let mut buf: Vec<u8> = vec![0; 500];
+    let mut prev_best: f32 = f32::MAX;
 
     loop {
         match socket.recv_from(&mut buf) {
@@ -128,6 +136,7 @@ pub fn parse_packets(sender: Sender<PacketInfo>) {
             max_rpm: parse_f32_from_bytes(&buf[8..12]),
             speed: (parse_f32_from_bytes(&buf[244..248]) * 2.237).round(),
             best_lap: parse_f32_from_bytes(&buf[284..288]),
+            prev_best: prev_best,
             current_lap: parse_f32_from_bytes(&buf[292..296]),
             last_lap: parse_f32_from_bytes(&buf[288..292]),
             lap_number: parse_i16_from_bytes(&buf[300..302]) as i32,
@@ -140,6 +149,10 @@ pub fn parse_packets(sender: Sender<PacketInfo>) {
             temp_left_r: parse_f32_from_bytes(&buf[264..268]).round(),
             temp_right_r: parse_f32_from_bytes(&buf[268..272]).round(),
         };
+
+        if packet_info.last_lap != packet_info.best_lap {
+            prev_best = packet_info.best_lap;
+        }
 
         match sender.send(packet_info) {
             Ok(()) => (),
