@@ -120,7 +120,7 @@ fn parse_i16_from_bytes(buf: &[u8]) -> i16 {
 pub fn parse_packets(sender: Sender<PacketInfo>) {
     let socket: UdpSocket = setup_udp_socket();
     let mut buf: Vec<u8> = vec![0; 500];
-    let mut prev_best: f32 = f32::MAX;
+    let mut prev_best: f32 = 0.0;
 
     loop {
         match socket.recv_from(&mut buf) {
@@ -149,6 +149,10 @@ pub fn parse_packets(sender: Sender<PacketInfo>) {
             temp_left_r: parse_f32_from_bytes(&buf[264..268]).round(),
             temp_right_r: parse_f32_from_bytes(&buf[268..272]).round(),
         };
+
+        if packet_info.lap_number == 2 {
+            prev_best = packet_info.best_lap;
+        }
 
         if packet_info.last_lap != packet_info.best_lap {
             prev_best = packet_info.best_lap;
