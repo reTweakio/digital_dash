@@ -18,6 +18,44 @@ pub struct TelemPacket {
 }
 
 impl TelemPacket {
+    pub fn new(
+        current_rpm: f32,
+        max_rpm: f32,
+        speed: f32,
+        best_lap: f32,
+        prev_best: f32,
+        current_lap: f32,
+        last_lap: f32,
+        gear: i32,
+        accel: f32,
+        brake: f32,
+        position: i32,
+        temp_left_f: f32,
+        temp_right_f: f32,
+        temp_left_r: f32,
+        temp_right_r: f32,
+        lap_number: i32,
+    ) -> Self {
+        Self {
+            current_rpm,
+            max_rpm,
+            speed,
+            best_lap,
+            prev_best,
+            current_lap,
+            last_lap,
+            gear,
+            accel,
+            brake,
+            position,
+            temp_left_f,
+            temp_right_f,
+            temp_left_r,
+            temp_right_r,
+            lap_number,
+        }
+    }
+
     pub fn get_current_rpm(&self) -> f32 {
         self.current_rpm
     }
