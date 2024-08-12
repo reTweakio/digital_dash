@@ -1,4 +1,4 @@
-pub struct TelemPacket {
+pub struct Telemetry {
     current_rpm: f32,
     max_rpm: f32,
     speed: f32,
@@ -17,7 +17,7 @@ pub struct TelemPacket {
     lap_number: i32,
 }
 
-impl TelemPacket {
+impl Telemetry {
     pub fn new(
         current_rpm: f32,
         max_rpm: f32,
