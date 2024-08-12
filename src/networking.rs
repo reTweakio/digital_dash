@@ -1,81 +1,8 @@
+use local_ip_address::local_ip;
 use std::net::UdpSocket;
 use std::sync::mpsc::Sender;
-use local_ip_address::local_ip;
 
-
-pub struct PacketInfo {
-    current_rpm: f32,
-    max_rpm: f32,
-    speed: f32,
-    best_lap: f32,
-    prev_best: f32,
-    current_lap: f32,
-    last_lap: f32,
-    gear: i32,
-    accel: f32,
-    brake: f32,
-    position: i32,
-    temp_left_f: f32,
-    temp_right_f: f32,
-    temp_left_r: f32,
-    temp_right_r: f32,
-    lap_number: i32
-}
-
-impl PacketInfo {
-    pub fn get_current_rpm(&self) -> f32 { self.current_rpm }
-
-    pub fn get_max_rpm(&self) -> f32 { self.max_rpm }
-
-    pub fn get_speed(&self) -> f32 { self.speed }
-
-    pub fn get_best_lap(&self) -> String { Self::format_time(self.best_lap) }
-
-    pub fn get_current_lap(&self) -> String { Self::format_time(self.current_lap) }
-
-    pub fn get_gear(&self) -> i32 { self.gear }
-
-    pub fn get_accel(&self) -> f32 { self.accel / 255.0 * 100.0 }
-
-    pub fn get_brake(&self) -> f32 { self.brake / 255.0 * 100.0 }
-
-    pub fn get_position(&self) -> i32 { self.position }
-
-    pub fn get_temp_left_f(&self) -> f32 { self.temp_left_f }
-
-    pub fn get_temp_right_f(&self) -> f32 { self.temp_right_f }
-
-    pub fn get_temp_left_r(&self) -> f32 { self.temp_left_r }
-
-    pub fn get_temp_right_r(&self) -> f32 { self.temp_right_r }
-
-    pub fn get_lap_number(&self) -> i32 { self.lap_number + 1 }
-
-    pub fn get_delta(&self) -> String { 
-        let delta = if self.last_lap == self.best_lap {
-            self.last_lap - self.prev_best
-        } else {
-            self.last_lap - self.best_lap
-        };
-
-        Self::format_time(delta)
-    }
-
-    fn format_time(time: f32) -> String {
-        let minutes: i32 = (time.abs() / 60.0).floor() as i32;
-        let seconds: i32 = (time.abs() % 60.0).floor() as i32;
-        let milliseconds: i32 = (time.abs() * 1000.0).round() as i32 % 1000;
-
-        if time < 0.0 {
-            format!("-{:02}:{:02}.{:03}", minutes, seconds, milliseconds)
-        } 
-
-        else {
-            format!("{:02}:{:02}.{:03}", minutes, seconds, milliseconds)
-        }
-    }
-}
-
+use crate::telemetry::TelemPacket;
 
 fn setup_udp_socket() -> UdpSocket {
     let ip_addr: String = match local_ip() {
@@ -117,7 +44,7 @@ fn parse_i16_from_bytes(buf: &[u8]) -> i16 {
     })
 }
 
-pub fn parse_packets(sender: Sender<PacketInfo>) {
+pub fn parse_packets(sender: Sender<TelemPacket>) {
     let socket: UdpSocket = setup_udp_socket();
     let mut buf: Vec<u8> = vec![0; 500];
     let mut prev_best: f32 = 0.0;
@@ -131,7 +58,7 @@ pub fn parse_packets(sender: Sender<PacketInfo>) {
             }
         }
 
-        let packet_info: PacketInfo = PacketInfo {
+        let packet_info: TelemPacket = TelemPacket {
             current_rpm: parse_f32_from_bytes(&buf[16..20]).round(),
             max_rpm: parse_f32_from_bytes(&buf[8..12]),
             speed: (parse_f32_from_bytes(&buf[244..248]) * 2.237).round(),

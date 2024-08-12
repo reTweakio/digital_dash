@@ -1,7 +1,8 @@
-use std::thread;
 use std::sync::mpsc;
+use std::thread;
 
 mod networking;
+mod telemetry;
 mod ui;
 
 fn main() {
