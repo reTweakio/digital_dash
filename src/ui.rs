@@ -1,4 +1,4 @@
-use crate::networking::PacketInfo;
+use crate::telemetry::Telemetry;
 use slint::{ModelRc, SharedString, VecModel};
 use std::sync::mpsc::Receiver;
 use std::thread;
@@ -14,7 +14,7 @@ fn update_rpm_lights(rpm: f32, max_rpm: f32, rpm_lights: &mut Vec<bool>) {
     }
 }
 
-pub fn run_ui(receiver: Receiver<PacketInfo>) {
+pub fn run_ui(receiver: Receiver<Telemetry>) {
     let dashboard: Dashboard = match Dashboard::new() {
         Ok(dash) => dash,
         Err(err) => {
@@ -25,7 +25,7 @@ pub fn run_ui(receiver: Receiver<PacketInfo>) {
     let weak_dashboard: slint::Weak<Dashboard> = dashboard.as_weak();
 
     thread::spawn(move || loop {
-        let packet_info: PacketInfo = match receiver.recv() {
+        let packet_info: Telemetry = match receiver.recv() {
             Ok(recved_info) => recved_info,
             Err(err) => {
                 eprintln!("Error: {}", err);
