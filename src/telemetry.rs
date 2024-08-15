@@ -119,7 +119,7 @@ impl Telemetry {
 
     pub fn get_delta(&self) -> String {
         let delta = if self.last_lap == self.best_lap {
-            self.prev_best - self.best_lap
+            self.last_lap - self.prev_best
         } else {
             self.last_lap - self.best_lap
         };
@@ -213,6 +213,10 @@ impl Telemetry {
             telem.temp_left_r = Self::parse_f32_from_bytes(&buf[264..268]).round();
             telem.temp_right_r = Self::parse_f32_from_bytes(&buf[268..272]).round();
 
+            if telem.prev_best == 0.0 && telem.lap_number > 1 {
+                telem.prev_best = telem.best_lap;
+            }
+
             if telem.last_lap != telem.best_lap {
                 telem.prev_best = telem.best_lap;
             }
@@ -225,5 +229,44 @@ impl Telemetry {
                 }
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_delta_calculation() {
+        let mut telemetry = Telemetry::new(
+            0.0, 0.0, 0.0, 60.0, 60.0, 0.0, 62.0, 0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0,
+        );
+
+        // Delta when last lap is worse (slower) and no change in best lap
+        assert_eq!(telemetry.get_delta(), "00:02.000");
+
+        // Update values to reflect a faster lap time
+        telemetry.best_lap = 60.0;
+        telemetry.last_lap = 58.0;
+        telemetry.prev_best = 62.0;
+
+        // Delta when last lap is faster (better) than best lap
+        assert_eq!(telemetry.get_delta(), "-00:02.000");
+
+        // Update values for the case where last lap time is the same as the best lap time
+        telemetry.best_lap = 60.0;
+        telemetry.last_lap = 62.0;
+        telemetry.prev_best = 62.0;
+
+        // Delta when last lap is worse (slower) than best lap but prev_best is the same as best_lap
+        assert_eq!(telemetry.get_delta(), "00:02.000");
+
+        // Update values for the case where last lap time is equal to the best lap time
+        telemetry.best_lap = 60.0;
+        telemetry.last_lap = 60.0;
+        telemetry.prev_best = 62.0;
+
+        // Delta when last lap is the same as best lap and prev_best is different
+        assert_eq!(telemetry.get_delta(), "-00:02.000");
     }
 }
