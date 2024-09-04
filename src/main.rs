@@ -1,4 +1,4 @@
-use std::sync::mpsc;
+use std::sync::{Arc, Condvar, Mutex};
 use std::thread;
 
 use telemetry::Telemetry;
@@ -7,11 +7,13 @@ mod telemetry;
 mod ui;
 
 fn main() {
-    let (sender, receiver) = mpsc::channel();
+    let telem = Arc::new((Mutex::new(Telemetry::default()), Condvar::new()));
 
+    let telemetry_clone = Arc::clone(&telem);
     thread::spawn(move || {
-        Telemetry::parse_packets(&sender);
+        Telemetry::parse_packets(telemetry_clone);
     });
 
-    ui::run_ui(receiver);
+    let ui_clone = Arc::clone(&telem);
+    ui::run_ui(ui_clone);
 }
