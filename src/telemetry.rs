@@ -1,8 +1,8 @@
 use local_ip_address::local_ip;
 use std::net::UdpSocket;
-use std::sync::mpsc::Sender;
+use std::sync::{Arc, Condvar, Mutex};
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Telemetry {
     current_rpm: f32,
     max_rpm: f32,
@@ -23,44 +23,6 @@ pub struct Telemetry {
 }
 
 impl Telemetry {
-    pub fn new(
-        current_rpm: f32,
-        max_rpm: f32,
-        speed: f32,
-        best_lap: f32,
-        prev_best: f32,
-        current_lap: f32,
-        last_lap: f32,
-        gear: i32,
-        accel: f32,
-        brake: f32,
-        position: i32,
-        temp_left_f: f32,
-        temp_right_f: f32,
-        temp_left_r: f32,
-        temp_right_r: f32,
-        lap_number: i32,
-    ) -> Self {
-        Self {
-            current_rpm,
-            max_rpm,
-            speed,
-            best_lap,
-            prev_best,
-            current_lap,
-            last_lap,
-            gear,
-            accel,
-            brake,
-            position,
-            temp_left_f,
-            temp_right_f,
-            temp_left_r,
-            temp_right_r,
-            lap_number,
-        }
-    }
-
     pub fn get_current_rpm(&self) -> f32 {
         self.current_rpm
     }
@@ -179,12 +141,8 @@ impl Telemetry {
         })
     }
 
-    pub fn parse_packets(sender: &Sender<Telemetry>) {
+    pub fn parse_packets(telem: Arc<(Mutex<Telemetry>, Condvar)>) {
         let socket: UdpSocket = Self::setup_udp_socket();
-
-        let mut telem = Telemetry::new(
-            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0,
-        );
 
         loop {
             let mut buf: Vec<u8> = vec![0; 500];
@@ -196,6 +154,8 @@ impl Telemetry {
                     std::process::exit(1);
                 }
             }
+            let (lock, cvar) = &*telem;
+            let mut telem = lock.lock().unwrap();
 
             telem.current_rpm = Self::parse_f32_from_bytes(&buf[16..20]).round();
             telem.max_rpm = Self::parse_f32_from_bytes(&buf[8..12]);
@@ -221,13 +181,8 @@ impl Telemetry {
                 telem.prev_best = telem.best_lap;
             }
 
-            match sender.send(telem.clone()) {
-                Ok(()) => (),
-                Err(err) => {
-                    eprintln!("Error: {}", err);
-                    std::process::exit(1);
-                }
-            }
+            cvar.notify_one();
+            drop(telem);
         }
     }
 }
@@ -238,9 +193,7 @@ mod tests {
 
     #[test]
     fn test_delta_calculation() {
-        let mut telemetry = Telemetry::new(
-            0.0, 0.0, 0.0, 60.0, 60.0, 0.0, 62.0, 0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0,
-        );
+        let mut telemetry = Telemetry::default();
 
         // Delta when last lap is worse (slower) and no change in best lap
         assert_eq!(telemetry.get_delta(), "00:02.000");

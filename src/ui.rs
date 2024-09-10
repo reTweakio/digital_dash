@@ -1,6 +1,7 @@
 use crate::telemetry::Telemetry;
+
 use slint::{ModelRc, SharedString, VecModel};
-use std::sync::mpsc::Receiver;
+use std::sync::{Arc, Condvar, Mutex};
 use std::thread;
 
 slint::include_modules!();
@@ -14,7 +15,7 @@ fn update_rpm_lights(rpm: f32, max_rpm: f32, rpm_lights: &mut Vec<bool>) {
     }
 }
 
-pub fn run_ui(receiver: Receiver<Telemetry>) {
+pub fn run_ui(telem: Arc<(Mutex<Telemetry>, Condvar)>) {
     let dashboard: Dashboard = match Dashboard::new() {
         Ok(dash) => dash,
         Err(err) => {
@@ -25,28 +26,24 @@ pub fn run_ui(receiver: Receiver<Telemetry>) {
     let weak_dashboard: slint::Weak<Dashboard> = dashboard.as_weak();
 
     thread::spawn(move || loop {
-        let packet_info: Telemetry = match receiver.recv() {
-            Ok(recved_info) => recved_info,
-            Err(err) => {
-                eprintln!("Error: {}", err);
-                std::process::exit(1);
-            }
-        };
+        let (lock, cvar) = &*telem;
+        let telem = lock.lock().unwrap();
+        let telem = cvar.wait(telem).unwrap();
 
-        let current_rpm: f32 = packet_info.get_current_rpm();
-        let max_rpm: f32 = packet_info.get_max_rpm();
-        let speed: f32 = packet_info.get_speed();
-        let best_lap: String = packet_info.get_best_lap();
-        let current_lap: String = packet_info.get_current_lap();
-        let gear: i32 = packet_info.get_gear();
-        let accel: f32 = packet_info.get_accel();
-        let brake: f32 = packet_info.get_brake();
-        let position: i32 = packet_info.get_position();
-        let temp_left_f: f32 = packet_info.get_temp_left_f();
-        let temp_right_f: f32 = packet_info.get_temp_right_f();
-        let temp_left_r: f32 = packet_info.get_temp_left_r();
-        let temp_right_r: f32 = packet_info.get_temp_right_r();
-        let lap_number: i32 = packet_info.get_lap_number();
+        let current_rpm: f32 = telem.get_current_rpm();
+        let max_rpm: f32 = telem.get_max_rpm();
+        let speed: f32 = telem.get_speed();
+        let best_lap: String = telem.get_best_lap();
+        let current_lap: String = telem.get_current_lap();
+        let gear: i32 = telem.get_gear();
+        let accel: f32 = telem.get_accel();
+        let brake: f32 = telem.get_brake();
+        let position: i32 = telem.get_position();
+        let temp_left_f: f32 = telem.get_temp_left_f();
+        let temp_right_f: f32 = telem.get_temp_right_f();
+        let temp_left_r: f32 = telem.get_temp_left_r();
+        let temp_right_r: f32 = telem.get_temp_right_r();
+        let lap_number: i32 = telem.get_lap_number();
 
         let mut rpm_lights: Vec<bool> = vec![false; 15];
         update_rpm_lights(current_rpm, max_rpm, &mut rpm_lights);
@@ -67,12 +64,12 @@ pub fn run_ui(receiver: Receiver<Telemetry>) {
             dash.set_lap_number(lap_number);
             dash.set_rpm_lights(ModelRc::new(VecModel::from(rpm_lights)));
 
-            if lap_number > 2 {
-                let delta: String = packet_info.get_delta();
-                let new_best: bool = delta.starts_with('-');
-                dash.set_delta(SharedString::from(delta));
-                dash.set_new_best(new_best);
-            }
+            // if lap_number > 2 {
+            //     let delta: String = telem.get_delta();
+            //     let new_best: bool = delta.starts_with('-');
+            //     dash.set_delta(SharedString::from(delta));
+            //     dash.set_new_best(new_best);
+            // }
         }) {
             Ok(_) => (),
             Err(err) => {
@@ -80,6 +77,8 @@ pub fn run_ui(receiver: Receiver<Telemetry>) {
                 std::process::exit(1);
             }
         }
+
+        drop(telem);
     });
 
     match dashboard.run() {
