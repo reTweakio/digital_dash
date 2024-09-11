@@ -182,7 +182,6 @@ impl Telemetry {
             }
 
             cvar.notify_one();
-            drop(telem);
         }
     }
 }
