@@ -182,7 +182,7 @@ impl Telemetry {
             }
 
             cvar.notify_one();
-            telem = cvar.wait(telem).unwrap();
+            let _telem = cvar.wait(telem).unwrap();
         }
     }
 }
