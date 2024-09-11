@@ -77,6 +77,8 @@ pub fn run_ui(telem: Arc<(Mutex<Telemetry>, Condvar)>) {
                 std::process::exit(1);
             }
         }
+
+        cvar.notify_one();
     });
 
     match dashboard.run() {
