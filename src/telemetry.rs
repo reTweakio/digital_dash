@@ -102,43 +102,19 @@ impl Telemetry {
     }
 
     fn setup_udp_socket() -> UdpSocket {
-        let ip_addr: String = match local_ip() {
-            Ok(ip) => ip.to_string(),
-            Err(err) => {
-                eprintln!("Error: {}", err);
-                std::process::exit(1);
-            }
-        };
+        let ip_addr: String = local_ip().unwrap().to_string();
         let port: &str = "8080";
         let binding_addr: String = format!("{}:{}", ip_addr, port);
-        let socket: UdpSocket = match UdpSocket::bind(binding_addr) {
-            Ok(socket) => socket,
-            Err(err) => {
-                eprintln!("Error: {}", err);
-                std::process::exit(1);
-            }
-        };
+        let socket: UdpSocket = UdpSocket::bind(binding_addr).unwrap();
         socket
     }
 
     fn parse_f32_from_bytes(buf: &[u8]) -> f32 {
-        f32::from_le_bytes(match buf.try_into() {
-            Ok(bytes) => bytes,
-            Err(err) => {
-                eprintln!("Error: {}", err);
-                std::process::exit(1);
-            }
-        })
+        f32::from_le_bytes(buf.try_into().unwrap())
     }
 
     fn parse_i16_from_bytes(buf: &[u8]) -> i16 {
-        i16::from_le_bytes(match buf.try_into() {
-            Ok(bytes) => bytes,
-            Err(err) => {
-                eprintln!("Error: {}", err);
-                std::process::exit(1);
-            }
-        })
+        i16::from_le_bytes(buf.try_into().unwrap())
     }
 
     pub fn parse_packets(telem: Arc<(Mutex<Telemetry>, Condvar)>) {
@@ -147,13 +123,7 @@ impl Telemetry {
         loop {
             let mut buf: Vec<u8> = vec![0; 500];
 
-            match socket.recv_from(&mut buf) {
-                Ok(_) => (),
-                Err(err) => {
-                    eprintln!("Error: {}", err);
-                    std::process::exit(1);
-                }
-            }
+            socket.recv_from(&mut buf).unwrap();
             let (lock, cvar) = &*telem;
             let mut telem = lock.lock().unwrap();
 

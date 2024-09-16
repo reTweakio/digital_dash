@@ -16,13 +16,7 @@ fn update_rpm_lights(rpm: f32, max_rpm: f32, rpm_lights: &mut Vec<bool>) {
 }
 
 pub fn run_ui(telem: Arc<(Mutex<Telemetry>, Condvar)>) {
-    let dashboard: Dashboard = match Dashboard::new() {
-        Ok(dash) => dash,
-        Err(err) => {
-            eprintln!("Error: {}", err);
-            std::process::exit(1);
-        }
-    };
+    let dashboard: Dashboard = Dashboard::new().unwrap();
     let weak_dashboard: slint::Weak<Dashboard> = dashboard.as_weak();
 
     thread::spawn(move || loop {
@@ -48,44 +42,34 @@ pub fn run_ui(telem: Arc<(Mutex<Telemetry>, Condvar)>) {
         let mut rpm_lights: Vec<bool> = vec![false; 15];
         update_rpm_lights(current_rpm, max_rpm, &mut rpm_lights);
 
-        match weak_dashboard.upgrade_in_event_loop(move |dash: Dashboard| {
-            dash.set_rpm(current_rpm);
-            dash.set_speed(speed);
-            dash.set_best_lap(SharedString::from(best_lap));
-            dash.set_current_lap(SharedString::from(current_lap));
-            dash.set_gear(gear);
-            dash.set_accel(accel);
-            dash.set_brake(brake);
-            dash.set_position(position);
-            dash.set_temp_left_f(temp_left_f);
-            dash.set_temp_right_f(temp_right_f);
-            dash.set_temp_left_r(temp_left_r);
-            dash.set_temp_right_r(temp_right_r);
-            dash.set_lap_number(lap_number);
-            dash.set_rpm_lights(ModelRc::new(VecModel::from(rpm_lights)));
+        weak_dashboard
+            .upgrade_in_event_loop(move |dash: Dashboard| {
+                dash.set_rpm(current_rpm);
+                dash.set_speed(speed);
+                dash.set_best_lap(SharedString::from(best_lap));
+                dash.set_current_lap(SharedString::from(current_lap));
+                dash.set_gear(gear);
+                dash.set_accel(accel);
+                dash.set_brake(brake);
+                dash.set_position(position);
+                dash.set_temp_left_f(temp_left_f);
+                dash.set_temp_right_f(temp_right_f);
+                dash.set_temp_left_r(temp_left_r);
+                dash.set_temp_right_r(temp_right_r);
+                dash.set_lap_number(lap_number);
+                dash.set_rpm_lights(ModelRc::new(VecModel::from(rpm_lights)));
 
-            // if lap_number > 2 {
-            //     let delta: String = telem.get_delta();
-            //     let new_best: bool = delta.starts_with('-');
-            //     dash.set_delta(SharedString::from(delta));
-            //     dash.set_new_best(new_best);
-            // }
-        }) {
-            Ok(_) => (),
-            Err(err) => {
-                eprintln!("Error: {}", err);
-                std::process::exit(1);
-            }
-        }
+                // if lap_number > 2 {
+                //     let delta: String = telem.get_delta();
+                //     let new_best: bool = delta.starts_with('-');
+                //     dash.set_delta(SharedString::from(delta));
+                //     dash.set_new_best(new_best);
+                // }
+            })
+            .unwrap();
 
         cvar.notify_one();
     });
 
-    match dashboard.run() {
-        Ok(_) => (),
-        Err(err) => {
-            eprintln!("Error: {}", err);
-            std::process::exit(1);
-        }
-    }
+    dashboard.run().unwrap();
 }
