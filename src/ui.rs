@@ -42,6 +42,7 @@ pub fn run_ui(telem: Arc<(Mutex<Telemetry>, Condvar)>) {
         let mut rpm_lights: Vec<bool> = vec![false; 15];
         update_rpm_lights(current_rpm, max_rpm, &mut rpm_lights);
 
+        let telem_copy = telem.clone();
         weak_dashboard
             .upgrade_in_event_loop(move |dash: Dashboard| {
                 dash.set_rpm(current_rpm);
@@ -59,12 +60,11 @@ pub fn run_ui(telem: Arc<(Mutex<Telemetry>, Condvar)>) {
                 dash.set_lap_number(lap_number);
                 dash.set_rpm_lights(ModelRc::new(VecModel::from(rpm_lights)));
 
-                // if lap_number > 2 {
-                //     let delta: String = telem.get_delta();
-                //     let new_best: bool = delta.starts_with('-');
-                //     dash.set_delta(SharedString::from(delta));
-                //     dash.set_new_best(new_best);
-                // }
+                if lap_number > 2 {
+                    let delta: String = telem_copy.get_delta();
+                    dash.set_delta(SharedString::from(&delta));
+                    dash.set_new_best(delta.starts_with('-'));
+                }
             })
             .unwrap();
 
