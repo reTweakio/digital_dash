@@ -1,8 +1,8 @@
-use crate::telemetry::Telemetry;
-
 use slint::{ModelRc, SharedString, VecModel};
 use std::sync::{Arc, Condvar, Mutex};
 use std::thread;
+
+use crate::telemetry::games::forza::ForzaTelemetry;
 
 slint::include_modules!();
 
@@ -15,7 +15,7 @@ fn update_rpm_lights(rpm: f32, max_rpm: f32, rpm_lights: &mut Vec<bool>) {
     }
 }
 
-pub fn run_ui(telem: Arc<(Mutex<Telemetry>, Condvar)>) {
+pub fn run_ui(telem: Arc<(Mutex<ForzaTelemetry>, Condvar)>) {
     let dashboard: Dashboard = Dashboard::new().unwrap();
     let weak_dashboard: slint::Weak<Dashboard> = dashboard.as_weak();
 
