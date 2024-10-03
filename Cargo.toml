@@ -5,6 +5,7 @@ edition = "2021"
 build = "build.rs"
 
 [dependencies]
+iced = "0.13.0"
 local-ip-address = "0.6.1"
 slint = "1.5.1"
 
