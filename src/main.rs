@@ -1,3 +1,4 @@
+use iced;
 use std::sync::{Arc, Condvar, Mutex};
 use std::thread;
 
@@ -8,7 +9,7 @@ use telemetry::parser::TelemetryParser;
 mod telemetry;
 mod ui;
 
-fn main() {
+fn main() -> iced::Result {
     let game: Game = Game::detect_game();
     let telemetry = match game {
         Game::Forza => Arc::new((Mutex::new(ForzaTelemetry::default()), Condvar::new())),
@@ -19,6 +20,5 @@ fn main() {
         Game::Forza => ForzaParser::parse_packets(telemetry_clone),
     });
 
-    let ui_clone = telemetry.clone();
-    ui::run_ui(ui_clone);
+    iced::run("Digital Dash", ForzaTelemetry::update, ForzaTelemetry::view)
 }
