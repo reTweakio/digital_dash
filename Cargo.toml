@@ -2,7 +2,6 @@
 name = "forza_telem"
 version = "0.1.0"
 edition = "2021"
-build = "build.rs"
 
 [dependencies]
 iced = "0.13.0"
