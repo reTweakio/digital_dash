@@ -1,7 +1,8 @@
-use crate::telemetry::parser::TelemetryParser;
-use crate::telemetry::utils::{parse_f32_from_bytes, parse_i16_from_bytes, setup_udp_socket};
 use std::net::UdpSocket;
 use std::sync::{Arc, Condvar, Mutex};
+
+use crate::telemetry::parser::TelemetryParser;
+use crate::telemetry::utils::{parse_f32_from_bytes, parse_i16_from_bytes, setup_udp_socket};
 
 #[derive(Default, Clone)]
 pub struct ForzaTelemetry {
